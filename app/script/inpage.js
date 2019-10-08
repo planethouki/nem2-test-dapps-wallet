@@ -1,3 +1,5 @@
+console.log('inpage loading')
+
 const LocalMessageDuplexStream = require('post-message-stream')
 
 const contentStream = new LocalMessageDuplexStream({
@@ -5,16 +7,36 @@ const contentStream = new LocalMessageDuplexStream({
     target: 'contentscript',
 })
 
+let contentStreamQueue = {}
+
 contentStream.on('data', (data) => {
-    console.log('contentStream', data)
+    const item = contentStreamQueue[data.processId]
+    if (item === undefined) {
+        return
+    }
+    if (data.result === 'success') {
+        item.resolve(data.data)
+    } else {
+        item.reject(data.data)
+    }
+    delete contentStreamQueue[data.processId]
 })
 
-contentStream.write({ greeting: 'hello' })
 
 window.nem2 = {
     sendTransaction(transaction) {
-        console.log('sendTransaction')
-        contentStream.write({ function: 'sendTransaction', data: {transaction} })
+        const processId = getRandomId()
+        contentStream.write({
+            method: 'sendTransaction',
+            processId,
+            data: {transaction: transaction.serialize(), name: transaction.constructor.name}
+        })
+        return new Promise((resolve, reject) => {
+            contentStreamQueue[processId] = {
+                resolve,
+                reject
+            }
+        })
     },
     address() {
         console.log('address')
@@ -25,4 +47,11 @@ window.nem2 = {
     generationHash() {
         console.log('generationHash')
     }
+}
+
+function getRandomId() {
+    const min = 0;
+    const max = 999999999;
+    const random = Math.floor(Math.random() * (max - min)) + min;
+    return random.toString() + Date.now().toString()
 }

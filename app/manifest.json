@@ -15,7 +15,9 @@
       ],
       "js": [
         "contentscript.js"
-      ]
+      ],
+      "run_at": "document_start",
+      "all_frames": true
     }
   ],
   "background": {

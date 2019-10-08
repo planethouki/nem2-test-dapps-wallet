@@ -4,24 +4,11 @@ const inpageStream = new LocalMessageDuplexStream({
     name: 'contentscript',
     target: 'inpage',
 })
+
 inpageStream.on('data', (data) => {
-    console.log('inpageStream', data)
     chrome.runtime.sendMessage(data, function(response) {
-        console.log('inpageStream', response)
         inpageStream.write(response)
     });
-})
-
-chrome.storage.local.set(
-    {
-        "value1": "string1",
-        "value2": "string2"
-    }
-)
-
-chrome.storage.local.get(["value1", "value2"], function(items) {
-    console.log(items.value1); // -> "string1"
-    console.log(items.value2); // -> "string2"
 })
 
 function injectScript () {
