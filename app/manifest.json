@@ -1,0 +1,38 @@
+{
+  "name": "nem2-test-dapps-wallet",
+  "manifest_version": 2,
+  "version": "1.0",
+  "browser_action": {
+    "default_icon": "icon_32.png",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "file://*/*",
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "contentscript.js"
+      ]
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "permissions": [
+    "storage"
+  ],
+  "web_accessible_resources": [
+    "inpage.js"
+  ],
+  "externally_connectable": {
+    "matches": [
+      "https://www.google.com/*"
+    ],
+    "ids": [
+      "*"
+    ]
+  }
+}
