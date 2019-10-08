@@ -12,9 +12,9 @@ contentStream.on('data', (data) => {
 contentStream.write({ greeting: 'hello' })
 
 window.nem2 = {
-    sign(transaction) {
-        console.log('sign')
-        contentStream.write({ function: 'sign', data: {transaction} })
+    sendTransaction(transaction) {
+        console.log('sendTransaction')
+        contentStream.write({ function: 'sendTransaction', data: {transaction} })
     },
     address() {
         console.log('address')
