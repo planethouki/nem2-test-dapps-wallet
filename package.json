@@ -11,10 +11,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bufferutil": "^4.0.1",
     "nem2-sdk": "^0.13.4",
-    "post-message-stream": "^3.0.0"
+    "post-message-stream": "^3.0.0",
+    "utf-8-validate": "^5.0.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "babelify": "^10.0.0",
     "browserify": "^16.5.0",
     "gulp": "^4.0.2",
     "rimraf": "^3.0.0",

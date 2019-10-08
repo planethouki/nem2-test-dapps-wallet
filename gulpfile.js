@@ -20,6 +20,7 @@ function copyImages() {
 }
 const script = (filename) => () => {
     return browserify(`app/script/${filename}`)
+        .transform("babelify", {presets: ["@babel/preset-env"]})
         .bundle()
         .pipe(source(filename))
         .pipe(dest('dist/'));
