@@ -29,7 +29,7 @@ window.nem2 = {
         contentStream.write({
             method: 'sendTransaction',
             processId,
-            data: {transaction: transaction.serialize(), name: transaction.constructor.name}
+            data: {payload: transaction.serialize(), name: transaction.constructor.name}
         })
         return new Promise((resolve, reject) => {
             contentStreamQueue[processId] = {

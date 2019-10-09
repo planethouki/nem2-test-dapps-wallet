@@ -18,6 +18,10 @@ function copyImages() {
     return src('app/images/*')
         .pipe(dest('dist/'));
 }
+function copyLib() {
+    return src('app/lib/*')
+        .pipe(dest('dist/'));
+}
 const script = (filename) => () => {
     return browserify(`app/script/${filename}`)
         .transform("babelify", {presets: ["@babel/preset-env"]})
@@ -28,8 +32,10 @@ const script = (filename) => () => {
 const scriptTasks = [
     'background.js',
     'contentscript.js',
-    'inpage.js'
+    'inpage.js',
+    'popup.js',
+    'notification.js'
 ].map((filename) => script(filename));
 
 
-exports.build = series(clean, parallel(copyHtml, copyManifest, copyImages, ...scriptTasks));
+exports.build = series(clean, parallel(copyHtml, copyManifest, copyImages, copyLib, ...scriptTasks));
