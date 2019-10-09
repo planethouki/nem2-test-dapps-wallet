@@ -1,7 +1,7 @@
 $('#submit').on('click', function(){
     console.log('submit clicked')
     chrome.tabs.getCurrent((tab) => {
-        chrome.extension.getBackgroundPage().popup.accept(tab.id)
+        chrome.extension.getBackgroundPage().notification.accept(tab.id)
         chrome.tabs.remove(tab.id)
     })
 });
@@ -9,7 +9,7 @@ $('#submit').on('click', function(){
 $('#close').on('click', function(){
     console.log('close clicked')
     chrome.tabs.getCurrent((tab) => {
-        chrome.extension.getBackgroundPage().popup.deny(tab.id)
+        chrome.extension.getBackgroundPage().notification.deny(tab.id)
         chrome.tabs.remove(tab.id)
     })
 });

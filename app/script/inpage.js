@@ -17,7 +17,7 @@ contentStream.on('data', (data) => {
     if (data.result === 'success') {
         item.resolve(data.data)
     } else {
-        item.reject(data.data)
+        item.reject(data.error)
     }
     delete contentStreamQueue[data.processId]
 })
