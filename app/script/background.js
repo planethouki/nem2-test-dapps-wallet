@@ -1,10 +1,11 @@
 import {
-    Account, AccountHttp, Address, NetworkHttp, NetworkType, SimpleWallet, TransactionHttp, UInt64, Password
+    Account, AccountHttp, Address, NetworkHttp, NetworkType, TransactionHttp, UInt64, Password, EncryptedPrivateKey, SimpleWallet
 } from 'nem2-sdk'
 
 import { Confirmation } from './lib/Confirmation'
 
 const wallets = {
+    accounts: [],
     networks: [
         {
             endPoint: 'https://fushicho.48gh23s.xyz:3001',
@@ -13,22 +14,32 @@ const wallets = {
             networkType: NetworkType.MIJIN_TEST
         }
     ],
-    items: [
-        '25B3F54217340F7061D02676C4B928ADB4395EB70A2A52D2A11E2F4AE011B03E'
-    ],
     getAccountByIndex(index) {
-        return Account.createFromPrivateKey(this.items[index], this.networks[index].networkType)
+        return this.accounts[index]
     },
     getNetworkByIndex(index) {
         return this.networks[index]
+    },
+    setAccounts(accounts) {
+        this.accounts = accounts
+    },
+    addAccount(account) {
+        this.accounts.push(account);
+        window.localStorage.setItem('accounts', JSON.stringify(this.accounts))
+    },
+    existsAccount() {
+        return this.accounts.length !== 0;
     }
-}
+};
 
 
 const currentAccount = {
     index: 0,
+    password: null,
+    sendMessageToPopup: () => {},
+    sendMessageToNotification: () => {},
     address() {
-        return wallets.getAccountByIndex(this.index).address.pretty()
+        return wallets.getAccountByIndex(this.index).address
     },
     endPoint() {
         return wallets.getNetworkByIndex(this.index).endPoint
@@ -49,10 +60,37 @@ const currentAccount = {
         const signedTransaction = wallets.getAccountByIndex(this.index).sign(
             confirmation.getTransaction(),
             this.generationHash()
-        )
+        );
         confirmation.announce(signedTransaction, this.endPoint())
+    },
+    setPassword(str) {
+        this.password = new Password(str);
+        this.sendMessageToPopup({ existsPassword: true });
+        this.sendMessageToNotification({ existsPassword: true })
+    },
+    existsPassword() {
+        return !!this.password;
+    },
+    addAccount(name, encryptedKey, iv, address) {
+        wallets.addAccount({
+            name,
+            encryptedKey,
+            iv,
+            address
+        });
+        this.sendMessageToPopup({ existsAccount: true });
+        this.sendMessageToNotification({ existsAccount: true })
+    },
+    existsAccount() {
+        return wallets.existsAccount()
+    },
+    setSendMessageToPopup(cb) {
+        this.sendMessageToPopup = cb
+    },
+    setSendMessageToNotification(cb) {
+        this.sendMessageToNotification = cb
     }
-}
+};
 
 const confirmations = {
     items: {},
@@ -60,11 +98,11 @@ const confirmations = {
         return this.items[key]
     },
     push(key, item) {
-        this.items[key] = item
+        this.items[key] = item;
         this.setBadge()
     },
     delete(key) {
-        delete this.items[key]
+        delete this.items[key];
         this.setBadge()
     },
     count() {
@@ -74,10 +112,10 @@ const confirmations = {
         return this.count().toString()
     },
     setBadge() {
-        const text = this.countStr()
+        const text = this.countStr();
         chrome.browserAction.setBadgeText({text: text === "0" ? "" : text })
     }
-}
+};
 
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -87,7 +125,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             url: 'notification.html',
             active: true,
         }, (tab) => {
-            console.log('tab opened', tab)
+            console.log('tab opened', tab);
             confirmations.push(
                 tab.id,
                 new Confirmation(
@@ -100,17 +138,43 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             )
         })
     } else if (request.method === 'beforePageLoad') {
-        // todo check existsAccount
-        // todo check existsPassword
         sendResponse({
-            existsAccount: true,
-            existsPassword: true
+            existsAccount: currentAccount.existsAccount(),
+            existsPassword: currentAccount.existsPassword()
         });
     }
     return true
 });
 
 window.popup = {
+    setCallback(cb) {
+        currentAccount.setSendMessageToPopup(cb)
+    },
+    existsAccount() {
+        return currentAccount.existsAccount()
+    },
+    setInitialAccount(privateKey, password) {
+        let simpleWallet = SimpleWallet.createFromPrivateKey(
+            'Account 1',
+            new Password(password),
+            privateKey,
+            currentAccount.networkType()
+        );
+        currentAccount.addAccount(
+            'Account 1',
+            simpleWallet.encryptedPrivateKey.encryptedKey,
+            simpleWallet.encryptedPrivateKey.iv,
+            simpleWallet.address.pretty()
+        );
+        this.setPassword(password);
+        simpleWallet = undefined
+    },
+    existsPassword() {
+        return currentAccount.existsPassword()
+    },
+    setPassword(str) {
+        currentAccount.setPassword(str)
+    },
     getAccountStaticInfo() {
         return {
             address: currentAccount.address(),
@@ -118,13 +182,13 @@ window.popup = {
         }
     },
     getTransactions() {
-        const address = currentAccount.address()
-        const url = currentAccount.endPoint()
-        const networkHttp = new NetworkHttp(url)
-        const accountHttp = new AccountHttp(url, networkHttp)
+        const address = currentAccount.address();
+        const url = currentAccount.endPoint();
+        const networkHttp = new NetworkHttp(url);
+        const accountHttp = new AccountHttp(url, networkHttp);
         return accountHttp.transactions(Address.createFromRawAddress(address)).toPromise().then(
             (transactions) => {
-                const tx4 = transactions.slice(0, 4).map((t) => t.transactionInfo.hash)
+                const tx4 = transactions.slice(0, 4).map((t) => t.transactionInfo.hash);
                 return {
                     transactions: [...tx4, '', '', '', ''].slice(0, 4)
                 }
@@ -137,15 +201,15 @@ window.popup = {
         )
     },
     getAccountInfo() {
-        const address = currentAccount.address()
-        const url = currentAccount.endPoint()
-        const networkHttp = new NetworkHttp(url)
-        const accountHttp = new AccountHttp(url, networkHttp)
+        const address = currentAccount.address();
+        const url = currentAccount.endPoint();
+        const networkHttp = new NetworkHttp(url);
+        const accountHttp = new AccountHttp(url, networkHttp);
         return accountHttp.getAccountInfo(Address.createFromRawAddress(address)).toPromise().then(
             (accountInfo) => {
                 const mosaic = accountInfo.mosaics.find((mosaic) => {
                     return mosaic.id.id.equals(UInt64.fromHex(currentAccount.currencyMosaicId()))
-                })
+                });
                 return {
                     balance: mosaic ? mosaic.amount.toString() : "0"
                 }
@@ -157,30 +221,36 @@ window.popup = {
             }
         )
     }
-}
+};
 
 window.notification = {
     get(tabId) {
-        const conf = confirmations.get(tabId)
+        const conf = confirmations.get(tabId);
         if (conf === undefined) {
             return
         }
         return conf.getTransactionJson()
     },
     accept(tabId) {
-        const conf = confirmations.get(tabId)
+        const conf = confirmations.get(tabId);
         if (conf === undefined) {
             return
         }
-        currentAccount.announce(conf)
+        currentAccount.announce(conf);
         confirmations.delete(tabId)
     },
     deny(tabId) {
-        const conf = confirmations.get(tabId)
+        const conf = confirmations.get(tabId);
         if (conf === undefined) {
             return
         }
-        currentAccount.cancel(conf)
+        currentAccount.cancel(conf);
         confirmations.delete(tabId)
     }
+};
+
+const accountsStorage = window.localStorage.getItem('accounts');
+if (accountsStorage) {
+    console.log('accountsStorage', accountsStorage);
+    wallets.setAccounts(JSON.parse(accountsStorage))
 }
