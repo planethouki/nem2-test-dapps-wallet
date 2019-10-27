@@ -22,20 +22,31 @@ function copyLib() {
     return src('app/lib/*')
         .pipe(dest('dist/'));
 }
-const script = (filename) => () => {
+const script1 = (filename) => () => {
     return browserify(`app/script/${filename}`)
         .transform("babelify", {presets: ["@babel/preset-env"]})
         .bundle()
         .pipe(source(filename))
         .pipe(dest('dist/'));
 }
-const scriptTasks = [
+const scriptTasks1 = [
     'background.js',
     'contentscript.js',
     'inpage.js',
-    'popup.js',
     'notification.js'
-].map((filename) => script(filename));
+].map((filename) => script1(filename));
 
 
-exports.build = series(clean, parallel(copyHtml, copyManifest, copyImages, copyLib, ...scriptTasks));
+const script2 = (filename) => () => {
+    return browserify(`app/script/${filename}`)
+        .transform("babelify", {presets: ["@babel/preset-env", "@babel/preset-react"]})
+        .bundle()
+        .pipe(source(filename))
+        .pipe(dest('dist/'));
+}
+const scriptTasks2 = [
+    'popup.js',
+].map((filename) => script2(filename));
+
+
+exports.build = series(clean, parallel(copyHtml, copyManifest, copyImages, copyLib, ...scriptTasks1, ...scriptTasks2));

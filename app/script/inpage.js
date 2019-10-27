@@ -3,8 +3,8 @@ console.log('inpage loading')
 const LocalMessageDuplexStream = require('post-message-stream')
 
 const contentStream = new LocalMessageDuplexStream({
-    name: 'inpage',
-    target: 'contentscript',
+    name: 'zskmgbd0e32f5siy5ua973kqush6xxk5qd0hg3f2',
+    target: 'nw6i519ganfrhq8ax05v215txcor9rtk5rpcxcfz',
 })
 
 let contentStreamQueue = {}
