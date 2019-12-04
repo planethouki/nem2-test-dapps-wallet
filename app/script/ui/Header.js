@@ -13,7 +13,9 @@ export default class Header extends React.Component {
                 </div>
                 <div>nem2-test-dapps-wallet</div>
                 <div className="text-center" style={{width: '50px'}}>
-                    &#x2699;
+                    <button type="button" className="btn btn-light rounded-pill" onClick={this.props.onClickSetting}>
+                        &#x2699;
+                    </button>
                 </div>
             </div>
         )

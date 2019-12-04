@@ -120,28 +120,38 @@ const confirmations = {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log('background', request);
-    if (request.method === 'sendTransaction') {
-        chrome.tabs.create({
-            url: 'notification.html',
-            active: true,
-        }, (tab) => {
-            console.log('tab opened', tab);
-            confirmations.push(
-                tab.id,
-                new Confirmation(
-                    request.data.name,
-                    request.data.payload,
-                    request.processId,
-                    tab,
-                    sendResponse
+    switch (request.method) {
+        case 'sendTransaction':
+            chrome.tabs.create({
+                url: 'notification.html',
+                active: true,
+            }, (tab) => {
+                console.log('tab opened', tab);
+                confirmations.push(
+                    tab.id,
+                    new Confirmation(
+                        request.data.name,
+                        request.data.payload,
+                        request.processId,
+                        tab,
+                        sendResponse
+                    )
                 )
-            )
-        })
-    } else if (request.method === 'beforePageLoad') {
-        sendResponse({
-            existsAccount: currentAccount.existsAccount(),
-            existsPassword: currentAccount.existsPassword()
-        });
+            });
+            break;
+        case 'beforePageLoad':
+            sendResponse({
+                existsAccount: currentAccount.existsAccount(),
+                existsPassword: currentAccount.existsPassword()
+            });
+            break;
+        case 'getAddress':
+            sendResponse({
+                result: 'success',
+                data: currentAccount.address(),
+                processId: request.processId
+            });
+
     }
     return true
 });
@@ -249,8 +259,15 @@ window.notification = {
     }
 };
 
-const accountsStorage = window.localStorage.getItem('accounts');
-if (accountsStorage) {
-    console.log('accountsStorage', accountsStorage);
-    wallets.setAccounts(JSON.parse(accountsStorage))
-}
+// const accountsStorage = window.localStorage.getItem('accounts');
+// if (accountsStorage) {
+//     console.log('accountsStorage', accountsStorage);
+//     wallets.setAccounts(JSON.parse(accountsStorage))
+// }
+
+// private key: 25B3F54217340F7061D02676C4B928ADB4395EB70A2A52D2A11E2F4AE011B03E
+// password: password
+wallets.setAccounts([{ name: 'Account1',
+    encryptedKey: 'd1f4744612f0969bbe26bf374cb4af770af5c06da1d1ce770f384932fb7696373550fd9c712cf85c05957838abddf765',
+    iv: 'BF56924B12F2699CB1E3C794391398F6',
+    address: 'SCA7ZS-2B7DEE-BGU3TH-SILYHC-RUR32Y-YE55ZB-LYA2' }])

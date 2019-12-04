@@ -5,6 +5,7 @@ import Header from './ui/Header';
 import Account from './ui/Account'
 import SignIn from './ui/SignIn';
 import SignUp from './ui/SignUp';
+import Setting from './ui/Setting'
 
 class App extends React.Component {
     constructor(props) {
@@ -12,16 +13,29 @@ class App extends React.Component {
         const background = chrome.extension.getBackgroundPage();
         this.state = {
             existsAccount: background.popup.existsAccount(),
-            existsPassword: background.popup.existsPassword()
+            existsPassword: background.popup.existsPassword(),
+            isInSetting: false
         };
         background.popup.setCallback((state) => {
             this.setState(state)
         })
+        this.onClickSetting = this.onClickSetting.bind(this)
     }
 
-    login() {
+    onClickSetting() {
+        this.setState((state) => {
+            return {
+                isInSetting: !state.isInSetting
+            }
+        })
+    }
+
+    body() {
         if (this.state.existsAccount) {
             if (this.state.existsPassword) {
+                if (this.state.isInSetting) {
+                    return <Setting />
+                }
                 return <Account />
             }
             return <SignIn />
@@ -32,8 +46,8 @@ class App extends React.Component {
     render() {
         return (
             <ErrorBoundary>
-                <Header />
-                {this.login()}
+                <Header onClickSetting={this.onClickSetting} />
+                {this.body()}
             </ErrorBoundary>
         );
     }

@@ -1,16 +1,17 @@
-console.log('inpage loading')
+console.log('inpage loading');
 
-const LocalMessageDuplexStream = require('post-message-stream')
+const LocalMessageDuplexStream = require('post-message-stream');
 
 const contentStream = new LocalMessageDuplexStream({
     name: 'zskmgbd0e32f5siy5ua973kqush6xxk5qd0hg3f2',
     target: 'nw6i519ganfrhq8ax05v215txcor9rtk5rpcxcfz',
-})
+});
 
-let contentStreamQueue = {}
+let contentStreamQueue = {};
 
 contentStream.on('data', (data) => {
-    const item = contentStreamQueue[data.processId]
+    console.log(data);
+    const item = contentStreamQueue[data.processId];
     if (item === undefined) {
         return
     }
@@ -20,17 +21,17 @@ contentStream.on('data', (data) => {
         item.reject(data.error)
     }
     delete contentStreamQueue[data.processId]
-})
+});
 
 
 window.nem2 = {
     sendTransaction(transaction) {
-        const processId = getRandomId()
+        const processId = getRandomId();
         contentStream.write({
             method: 'sendTransaction',
             processId,
             data: {payload: transaction.serialize(), name: transaction.constructor.name}
-        })
+        });
         return new Promise((resolve, reject) => {
             contentStreamQueue[processId] = {
                 resolve,
@@ -38,16 +39,49 @@ window.nem2 = {
             }
         })
     },
-    address() {
-        console.log('address')
+    getAddress() {
+        console.log('address');
+        const processId = getRandomId();
+        contentStream.write({
+            method: 'getAddress',
+            processId
+        });
+        return new Promise((resolve, reject) => {
+            contentStreamQueue[processId] = {
+                resolve,
+                reject
+            }
+        })
     },
-    networkType() {
-        console.log('networkType')
+    getNetworkType() {
+        console.log('networkType');
+        const processId = getRandomId();
+        contentStream.write({
+            method: 'getNetworkType',
+            processId
+        });
+        return new Promise((resolve, reject) => {
+            contentStreamQueue[processId] = {
+                resolve,
+                reject
+            }
+        })
     },
-    generationHash() {
-        console.log('generationHash')
+    getGenerationHash() {
+        console.log('generationHash');
+        const processId = getRandomId();
+        contentStream.write({
+            method: 'getGenerationHash',
+            processId
+        });
+        return new Promise((resolve, reject) => {
+            contentStreamQueue[processId] = {
+                resolve,
+                reject
+            }
+        })
     }
-}
+};
 
 function getRandomId() {
     const min = 0;
