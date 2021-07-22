@@ -36,3 +36,12 @@ stream.on('data', (data) => {
     })
   }
 })
+
+browser.runtime.onMessage.addListener(function (request, sender) {
+  if (!request.type) return
+
+  if (request.type === ModelType.SIGNATURE_RESPONSE) {
+    console.log('content-script: receive SIGNATURE_RESPONSE')
+    stream.write(request)
+  }
+})

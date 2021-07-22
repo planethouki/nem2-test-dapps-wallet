@@ -10,7 +10,7 @@ const generationHash = '3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E92
 
 const nem2 = new Nem2(privateKey)
 
-browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+browser.runtime.onMessage.addListener(function (request, sender) {
   console.log('Hello from the background')
 
   // browser.tabs.executeScript({
@@ -30,8 +30,8 @@ browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       signerPublicKey +
       helper.getSigningPayload(unsignedPayload)
     const txHash = hash.getTransactionHash(payload, generationHash)
-    sendResponse(new SignatureResponse(payload, txHash, signerPublicKey))
     console.log('background: send SIGNATURE_RESPONSE')
+    return Promise.resolve(new SignatureResponse(payload, txHash, signerPublicKey))
   }
 })
 

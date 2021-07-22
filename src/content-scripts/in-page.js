@@ -48,7 +48,7 @@ function sign (payload) {
         }
       })
     contentScriptStream.write(new SignatureRequest(payload))
-  }).then((data) => data.payload)
+  })
 }
 
 window.nem2 = {
