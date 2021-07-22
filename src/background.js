@@ -39,7 +39,7 @@ function signatureRequestHandler (request) {
       helper.getSigningPayload(unsignedPayload)
     const txHash = hash.getTransactionHash(payload, generationHash)
     console.log('background: send SIGNATURE_RESPONSE')
-    return new SignatureResponse(payload, txHash, signerPublicKey)
+    return new SignatureResponse(request.id, payload, txHash, signerPublicKey)
   })
 }
 

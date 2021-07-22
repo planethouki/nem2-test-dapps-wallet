@@ -3,12 +3,13 @@ const ModelBase = require('./ModelBase')
 module.exports = class SignatureResponse extends ModelBase {
   /**
    *
+   * @param {string} id
    * @param {string} payload
    * @param {string} hash
    * @param {string} signerPublicKey
    */
-  constructor (payload, hash, signerPublicKey) {
-    super(ModelType.SIGNATURE_RESPONSE)
+  constructor (id, payload, hash, signerPublicKey) {
+    super(ModelType.SIGNATURE_RESPONSE, id)
     this.payload = payload
     this.hash = hash
     this.signerPublicKey = signerPublicKey

@@ -1,7 +1,14 @@
 module.exports = class ModelBase {
   type
+  id
 
-  constructor (type) {
+  /**
+   *
+   * @param type
+   * @param {string} id
+   */
+  constructor (type, id) {
     this.type = type
+    this.id = id
   }
 }

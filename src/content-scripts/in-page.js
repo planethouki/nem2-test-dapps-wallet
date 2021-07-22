@@ -1,16 +1,13 @@
 import { WindowPostMessageStream } from '@metamask/post-message-stream'
 import SignatureRequest from '../assets/models/SignatureRequest'
 import ModelType from '../assets/models/ModelType'
-import { Observable } from 'rxjs'
+import { Subject } from 'rxjs'
 import { filter } from 'rxjs/operators'
+import { v4 as uuid } from 'uuid'
 
 console.log('Hello from the inpage')
 
-let contentScriptSubscriber
-
-const observable = new Observable(function subscribe (subscriber) {
-  contentScriptSubscriber = subscriber
-})
+const subject = new Subject()
 
 const contentScriptStream = new WindowPostMessageStream({
   name: 'inPage',
@@ -23,7 +20,7 @@ contentScriptStream.on('data', (data) => {
   if (!data.type) return
 
   if (data.type === ModelType.SIGNATURE_RESPONSE) {
-    contentScriptSubscriber.next(data)
+    subject.next(data)
   }
 })
 
@@ -32,10 +29,12 @@ contentScriptStream.on('data', (data) => {
  * @param {string} payload
  */
 function sign (payload) {
+  const id = uuid()
   return new Promise((resolve, reject) => {
-    const subscription = observable
+    const subscription = subject
       .pipe(
-        filter((data) => data.type === ModelType.SIGNATURE_RESPONSE)
+        filter((data) => data.type === ModelType.SIGNATURE_RESPONSE),
+        filter((data) => data.id === id)
       )
       .subscribe({
         next: (data) => {
@@ -47,7 +46,7 @@ function sign (payload) {
           reject(err)
         }
       })
-    contentScriptStream.write(new SignatureRequest(payload))
+    contentScriptStream.write(new SignatureRequest(id, payload))
   })
 }
 
