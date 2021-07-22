@@ -22,8 +22,8 @@ module.exports = {
             'content-script': [
               'src/content-scripts/content-script.js'
             ],
-            inpage: [
-              'src/content-scripts/inpage.js'
+            'in-page': [
+              'src/content-scripts/in-page.js'
             ]
           }
         }

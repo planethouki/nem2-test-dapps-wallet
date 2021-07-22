@@ -1,0 +1,4 @@
+module.exports = {
+  SIGNATURE_REQUEST: 1,
+  SIGNATURE_RESPONSE: 2
+}

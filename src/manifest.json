@@ -30,6 +30,20 @@
     }
   },
   "web_accessible_resources": [
-    "js/inpage.js"
+    "js/in-page.js"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "file://*/*",
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "js/content-script.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
   ]
 }
