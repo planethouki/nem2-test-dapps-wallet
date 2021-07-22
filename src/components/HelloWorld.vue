@@ -1,21 +1,14 @@
 <template>
   <div>
     <p>{{ defaultText }}</p>
-    <p>{{ backgroundHoge }}</p>
   </div>
 </template>
 
 <script>
 export default {
   name: 'HelloWorld',
-  data () {
-    return {
-      backgroundHoge: null
-    }
-  },
   mounted () {
     browser.runtime.sendMessage({})
-    this.backgroundHoge = browser.extension.getBackgroundPage().hoge
   },
   computed: {
     defaultText () {
