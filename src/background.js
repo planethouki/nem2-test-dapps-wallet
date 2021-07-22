@@ -21,11 +21,11 @@ const store = new BackgroundStore(window.localStorage, setBadgeText)
 
 function signatureRequestHandler (signatureRequest) {
   console.log('background: receive SIGNATURE_REQUEST')
-  browser.browserAction.getPopup({}).then((url) => {
-    window.open(url, '', popupWindowFeatures)
-  })
-  return new Promise((resolve, reject) => {
-    store.pushSignConfirm(new BackgroundSignConfirm(resolve, reject))
+  return browser.browserAction.getPopup({}).then((url) => {
+    const popupWindowProxy = window.open(url, '', popupWindowFeatures)
+    return new Promise((resolve, reject) => {
+      store.pushSignConfirm(new BackgroundSignConfirm(resolve, reject, popupWindowProxy))
+    })
   }).then(() => {
     const unsignedPayload = signatureRequest.payload
     const signature = nem2.sign(unsignedPayload, generationHash)
