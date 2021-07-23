@@ -6,29 +6,30 @@ import helper from './assets/utils/helper'
 import BackgroundStore from './assets/background/BackgroundStore'
 import BackgroundSignConfirm from './assets/background/BackgroundSignConfirm'
 import SignatureDeniedResponse from './assets/models/SignatureDeniedResponse'
+import BackgroundSignConfirms from './assets/background/BackgroundSignConfirms'
 
-const privateKey = '25B3F54217340F7061D02676C4B928ADB4395EB70A2A52D2A11E2F4AE011B03E'
 const generationHash = '3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155'
 // const endPoint = 'https://dg0nbr5d1ohfy.cloudfront.net:443'
 const popupWindowFeatures = 'location=no, width=400, height=400'
-
-const nem2 = new Nem2(privateKey)
 
 const setBadgeText = (text) => {
   browser.browserAction.setBadgeText({ text })
 }
 
-const store = new BackgroundStore(window.localStorage, setBadgeText)
+const store = new BackgroundStore(window.localStorage)
+const confirms = new BackgroundSignConfirms(setBadgeText)
+const nem2 = new Nem2(store.getPrivateKey())
 
 function signatureRequestHandler (signatureRequest) {
   console.log('background: receive SIGNATURE_REQUEST')
   return browser.browserAction.getPopup({}).then((url) => {
     const popupWindowProxy = window.open(url, '', popupWindowFeatures)
     return new Promise((resolve, reject) => {
-      store.pushSignConfirm(new BackgroundSignConfirm(resolve, reject, popupWindowProxy))
+      confirms.pushSignConfirm(new BackgroundSignConfirm(resolve, reject, popupWindowProxy))
     })
   }).then((isOk) => {
     if (!isOk) {
+      console.log('background: send SIGNATURE_DENIED_RESPONSE')
       return new SignatureDeniedResponse(signatureRequest.id)
     }
     const unsignedPayload = signatureRequest.payload
@@ -52,19 +53,19 @@ browser.runtime.onMessage.addListener(function (request, sender) {
 window.nem2 = {
   signConfirm: {
     has () {
-      return store.hasSignConfirm()
+      return confirms.hasSignConfirm()
     },
     firstMessage () {
       return 'hoge'
     },
     addListener (callback) {
-      return store.addSignConfirmListener(callback)
+      return confirms.addSignConfirmListener(callback)
     },
     firstOk () {
-      store.firstOk()
+      confirms.firstOk()
     },
     firstCancel () {
-      store.firstCancel()
+      confirms.firstCancel()
     }
   }
 }
