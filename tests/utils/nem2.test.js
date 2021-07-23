@@ -1,7 +1,11 @@
+const axios = require('axios')
 const nem2 = require('../../src/assets/utils/nem2')
 const helper = require('../../src/assets/utils/helper')
 
+jest.mock('axios')
+
 describe('nem2', () => {
+
   test('sign', () => {
     const privateKey = '25B3F54217340F7061D02676C4B928ADB4395EB70A2A52D2A11E2F4AE011B03E'
     const generationHash = '3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155'
@@ -31,9 +35,17 @@ describe('nem2', () => {
   })
 
   test('getProperties',  async () => {
+    axios.request.mockResolvedValue({
+      data: {
+        networkGenerationHashSeed: 'networkGenerationHashSeed',
+        networkIdentifier: 12345
+      }
+    })
     const endPoint = 'https://dg0nbr5d1ohfy.cloudfront.net:443'
     const { generationHash, networkType } = await nem2.getProperties(endPoint)
-    expect(generationHash).toBe('3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155')
-    expect(networkType).toBe(152)
+    // expect(generationHash).toBe('3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155')
+    // expect(networkType).toBe(152)
+    expect(generationHash).toBe('networkGenerationHashSeed')
+    expect(networkType).toBe(12345)
   })
 })
