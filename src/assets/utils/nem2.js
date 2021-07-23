@@ -1,5 +1,6 @@
 const { uint8ArrayToHex, hexToUint8Array, getSigningPayload } = require('./helper')
 const tweetnacl = require('tweetnacl')
+const axios = require('axios')
 
 function privateKeyToPublicKey (hexPrivateKey) {
   const privateKey = hexToUint8Array(hexPrivateKey)
@@ -20,7 +21,25 @@ function sign (hexPrivateKey, txPayload, generationHash) {
   return uint8ArrayToHex(signature)
 }
 
+async function getProperties(endPoint) {
+  return axios.request({
+    method: "GET",
+    baseURL: endPoint,
+    url: '/node/info'
+  }).then((res) => {
+    const {
+      networkGenerationHashSeed,
+      networkIdentifier
+    } = res.data
+    return {
+      generationHash: networkGenerationHashSeed,
+      networkType: networkIdentifier
+    }
+  })
+}
+
 module.exports = {
   privateKeyToPublicKey,
-  sign
+  sign,
+  getProperties
 }

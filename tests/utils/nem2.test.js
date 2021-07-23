@@ -29,4 +29,11 @@ describe('nem2', () => {
     const publicKey = 'C65B49BA7673BFEC3EFD04DE7EF412A6346F4BA745AAC09649E8CAFE1AC38580'
     expect(nem2.privateKeyToPublicKey(privateKey)).toBe(publicKey)
   })
+
+  test('getProperties',  async () => {
+    const endPoint = 'https://dg0nbr5d1ohfy.cloudfront.net:443'
+    const { generationHash, networkType } = await nem2.getProperties(endPoint)
+    expect(generationHash).toBe('3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155')
+    expect(networkType).toBe(152)
+  })
 })
