@@ -15,7 +15,7 @@ const contentScriptStream = new WindowPostMessageStream({
 })
 
 contentScriptStream.on('data', (data) => {
-  console.log(data)
+  console.log('in-page: receive data', data)
 
   if (!data.type) return
 
