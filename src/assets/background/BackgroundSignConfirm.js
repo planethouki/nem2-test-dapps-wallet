@@ -11,11 +11,11 @@ module.exports = class BackgroundSignConfirm {
 
   ok () {
     this.popupWindowProxy.close()
-    this.resolve()
+    this.resolve(true)
   }
 
   cancel () {
     this.popupWindowProxy.close()
-    this.reject()
+    this.resolve(false)
   }
 }

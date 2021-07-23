@@ -5,6 +5,7 @@ import SignatureResponse from './assets/models/SignatureResponse'
 import helper from './assets/utils/helper'
 import BackgroundStore from './assets/background/BackgroundStore'
 import BackgroundSignConfirm from './assets/background/BackgroundSignConfirm'
+import SignatureDeniedResponse from './assets/models/SignatureDeniedResponse'
 
 const privateKey = '25B3F54217340F7061D02676C4B928ADB4395EB70A2A52D2A11E2F4AE011B03E'
 const generationHash = '3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155'
@@ -26,7 +27,10 @@ function signatureRequestHandler (signatureRequest) {
     return new Promise((resolve, reject) => {
       store.pushSignConfirm(new BackgroundSignConfirm(resolve, reject, popupWindowProxy))
     })
-  }).then(() => {
+  }).then((isOk) => {
+    if (!isOk) {
+      return new SignatureDeniedResponse(signatureRequest.id)
+    }
     const unsignedPayload = signatureRequest.payload
     const signature = nem2.sign(unsignedPayload, generationHash)
     const signerPublicKey = nem2.getPublicKey()

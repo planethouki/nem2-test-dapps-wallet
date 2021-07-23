@@ -31,17 +31,8 @@ stream.on('data', (data) => {
   if (data.type === ModelType.SIGNATURE_REQUEST) {
     console.log('content-script: receive SIGNATURE_REQUEST')
     browser.runtime.sendMessage(data).then((res) => {
-      console.log('content-script: receive SIGNATURE_RESPONSE')
+      console.log('content-script: receive SIGNATURE_(DENIED_)RESPONSE')
       stream.write(res)
     })
-  }
-})
-
-browser.runtime.onMessage.addListener(function (request, sender) {
-  if (!request.type) return
-
-  if (request.type === ModelType.SIGNATURE_RESPONSE) {
-    console.log('content-script: receive SIGNATURE_RESPONSE')
-    stream.write(request)
   }
 })

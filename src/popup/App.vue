@@ -26,7 +26,6 @@ export default {
   },
   created () {
     browser.runtime.getBackgroundPage().then((background) => {
-      console.log(background)
       this.signConfirmManager = background.nem2.signConfirm
       const handler = () => {
         if (this.signConfirmManager.has()) {
