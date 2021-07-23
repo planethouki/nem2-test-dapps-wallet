@@ -44,6 +44,13 @@ function getForwardPayload (payload) {
   return payload.substring(0, (8) * 2)
 }
 
+function spliceSignature (unsignedPayload, signature, signerPublicKey) {
+  return getForwardPayload(unsignedPayload) +
+    signature +
+    signerPublicKey +
+    getSigningPayload(unsignedPayload)
+}
+
 module.exports = {
   endian,
   uint8ArrayToHex,
@@ -51,5 +58,6 @@ module.exports = {
   parseNodeVersion,
   dec2hex8,
   getSigningPayload,
-  getForwardPayload
+  getForwardPayload,
+  spliceSignedPayload: spliceSignature
 }

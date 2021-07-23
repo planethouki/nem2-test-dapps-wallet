@@ -34,10 +34,7 @@ function signatureRequestHandler (signatureRequest) {
     const unsignedPayload = signatureRequest.payload
     const signature = nem2.sign(unsignedPayload, generationHash)
     const signerPublicKey = nem2.getPublicKey()
-    const payload = helper.getForwardPayload(unsignedPayload) +
-      signature +
-      signerPublicKey +
-      helper.getSigningPayload(unsignedPayload)
+    const payload = helper.spliceSignedPayload(unsignedPayload, signature, signerPublicKey)
     const txHash = hash.getTransactionHash(payload, generationHash)
     console.log('background: send SIGNATURE_RESPONSE')
     return new SignatureResponse(signatureRequest.id, payload, txHash, signerPublicKey)
