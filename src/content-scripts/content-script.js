@@ -1,8 +1,6 @@
 import { WindowPostMessageStream } from '@metamask/post-message-stream'
 import ModelType from '../assets/models/ModelType'
 
-console.log('Hello from the content-script')
-
 function injectScript () {
   try {
     const c = document.head || document.documentElement

@@ -53,9 +53,6 @@ browser.runtime.onMessage.addListener(function (request, sender) {
 })
 
 window.nem2 = {
-  hoge () {
-    return nem2.getPublicKey()
-  },
   signConfirm: {
     has () {
       return store.hasSignConfirm()

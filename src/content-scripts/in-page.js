@@ -7,9 +7,7 @@ import { v4 as uuid } from 'uuid'
 import UserDeniedSignatureError from '../assets/Errors/UserDeniedSignatureError'
 import UnknownError from '../assets/Errors/UnknownError'
 
-console.log('Hello from the inpage')
-
-const subject = new Subject()
+const modelSubject = new Subject()
 
 const contentScriptStream = new WindowPostMessageStream({
   name: 'inPage',
@@ -22,9 +20,9 @@ contentScriptStream.on('data', (data) => {
   if (!data.type) return
 
   if (data.type === ModelType.SIGNATURE_RESPONSE) {
-    subject.next(data)
+    modelSubject.next(data)
   } else if (data.type === ModelType.SIGNATURE_DENIED_RESPONSE) {
-    subject.next(data)
+    modelSubject.next(data)
   }
 })
 
@@ -35,7 +33,7 @@ contentScriptStream.on('data', (data) => {
 function sign (payload) {
   const id = uuid()
   return new Promise((resolve, reject) => {
-    const subscription = subject
+    const subscription = modelSubject
       .pipe(
         filter((data) => !!data.type),
         filter((data) => data.id === id)
