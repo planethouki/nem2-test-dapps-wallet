@@ -8,8 +8,6 @@ import BackgroundSignConfirm from './assets/background/BackgroundSignConfirm'
 import SignatureDeniedResponse from './assets/models/SignatureDeniedResponse'
 import BackgroundSignConfirms from './assets/background/BackgroundSignConfirms'
 
-const generationHash = '3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155'
-// const endPoint = 'https://dg0nbr5d1ohfy.cloudfront.net:443'
 const popupWindowFeatures = 'location=no, width=400, height=400'
 
 const setBadgeText = (text) => {
@@ -33,10 +31,10 @@ function signatureRequestHandler (signatureRequest) {
       return new SignatureDeniedResponse(signatureRequest.id)
     }
     const unsignedPayload = signatureRequest.payload
-    const signature = nem2.sign(unsignedPayload, generationHash)
+    const signature = nem2.sign(unsignedPayload, store.getGenerationHash)
     const signerPublicKey = nem2.getPublicKey()
     const payload = helper.spliceSignedPayload(unsignedPayload, signature, signerPublicKey)
-    const txHash = hash.getTransactionHash(payload, generationHash)
+    const txHash = hash.getTransactionHash(payload, store.getGenerationHash)
     console.log('background: send SIGNATURE_RESPONSE')
     return new SignatureResponse(signatureRequest.id, payload, txHash, signerPublicKey)
   })
