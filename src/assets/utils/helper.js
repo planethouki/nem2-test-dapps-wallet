@@ -56,6 +56,11 @@ function createDeadline (catapultTime) {
   return Number(catapultTime).toString(16).padStart(16, '0').toUpperCase()
 }
 
+function getTransactionType (payload) {
+  const hex = payload.substr((4 + 4 + 64 + 32 + 4 + 2) * 2, (2) * 2)
+  return Number(`0x${endian(hex)}`)
+}
+
 module.exports = {
   endian,
   uint8ArrayToHex,
@@ -65,5 +70,6 @@ module.exports = {
   getSigningPayload,
   getForwardPayload,
   spliceSignature,
-  createDeadline
+  createDeadline,
+  getTransactionType
 }

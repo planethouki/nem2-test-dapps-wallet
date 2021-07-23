@@ -42,7 +42,13 @@ function sign (payload) {
         next: (data) => {
           subscription.unsubscribe()
           if (data.type === ModelType.SIGNATURE_RESPONSE) {
-            resolve(data)
+            resolve({
+              payload: data.payload,
+              hash: data.hash,
+              signerPublicKey: data.signerPublicKey,
+              type: data.transactionType,
+              networkType: data.networkType
+            })
           } else if (data.type === ModelType.SIGNATURE_DENIED_RESPONSE) {
             const error = new UserDeniedSignatureError()
             reject(error)

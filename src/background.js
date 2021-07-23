@@ -44,8 +44,16 @@ function signatureRequestHandler (signatureRequest) {
     const signerPublicKey = store.getPublicKey()
     const payload = helper.spliceSignature(unsignedPayload, signature, signerPublicKey)
     const txHash = hash.getTransactionHash(payload, store.getGenerationHash())
+    const type = helper.getTransactionType(payload)
+    const networkType = store.getNetworkType()
     console.log('background: send SIGNATURE_RESPONSE')
-    return new SignatureResponse(signatureRequest.id, payload, txHash, signerPublicKey)
+    return new SignatureResponse(
+      signatureRequest.id,
+      payload,
+      txHash,
+      signerPublicKey,
+      type,
+      networkType)
   })
 }
 

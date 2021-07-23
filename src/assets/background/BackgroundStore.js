@@ -33,6 +33,10 @@ module.exports = class BackgroundStore {
     return this.publicKey
   }
 
+  getNetworkType () {
+    return this.networkType
+  }
+
   getEndPoint () {
     return this.endPoint
   }
