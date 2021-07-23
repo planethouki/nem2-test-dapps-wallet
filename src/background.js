@@ -1,4 +1,4 @@
-import Nem2 from './assets/utils/nem2'
+import nem2 from './assets/utils/nem2'
 import ModelType from './assets/models/ModelType'
 import hash from './assets/utils/hash'
 import SignatureResponse from './assets/models/SignatureResponse'
@@ -16,7 +16,6 @@ const setBadgeText = (text) => {
 
 const store = new BackgroundStore(window.localStorage)
 const confirms = new BackgroundSignConfirms(setBadgeText)
-const nem2 = new Nem2(store.getPrivateKey())
 
 function signatureRequestHandler (signatureRequest) {
   console.log('background: receive SIGNATURE_REQUEST')
@@ -31,10 +30,10 @@ function signatureRequestHandler (signatureRequest) {
       return new SignatureDeniedResponse(signatureRequest.id)
     }
     const unsignedPayload = signatureRequest.payload
-    const signature = nem2.sign(unsignedPayload, store.getGenerationHash)
-    const signerPublicKey = nem2.getPublicKey()
-    const payload = helper.spliceSignedPayload(unsignedPayload, signature, signerPublicKey)
-    const txHash = hash.getTransactionHash(payload, store.getGenerationHash)
+    const signature = nem2.sign(store.getPrivateKey(), unsignedPayload, store.getGenerationHash())
+    const signerPublicKey = store.getPublicKey()
+    const payload = helper.spliceSignature(unsignedPayload, signature, signerPublicKey)
+    const txHash = hash.getTransactionHash(payload, store.getGenerationHash())
     console.log('background: send SIGNATURE_RESPONSE')
     return new SignatureResponse(signatureRequest.id, payload, txHash, signerPublicKey)
   })

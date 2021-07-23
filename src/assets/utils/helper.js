@@ -48,7 +48,12 @@ function spliceSignature (unsignedPayload, signature, signerPublicKey) {
   return getForwardPayload(unsignedPayload) +
     signature +
     signerPublicKey +
+    "".padStart(8, "0") +
     getSigningPayload(unsignedPayload)
+}
+
+function createDeadline (catapultTime) {
+  return Number(catapultTime).toString(16).padStart(16, '0').toUpperCase()
 }
 
 module.exports = {
@@ -59,5 +64,6 @@ module.exports = {
   dec2hex8,
   getSigningPayload,
   getForwardPayload,
-  spliceSignedPayload: spliceSignature
+  spliceSignature,
+  createDeadline
 }
