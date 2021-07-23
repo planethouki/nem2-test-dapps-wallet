@@ -21,9 +21,9 @@ function sign (hexPrivateKey, txPayload, generationHash) {
   return uint8ArrayToHex(signature)
 }
 
-async function getProperties(endPoint) {
+async function getProperties (endPoint) {
   return axios.request({
-    method: "GET",
+    method: 'GET',
     baseURL: endPoint,
     url: '/node/info'
   }).then((res) => {

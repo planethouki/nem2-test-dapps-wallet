@@ -48,7 +48,7 @@ function spliceSignature (unsignedPayload, signature, signerPublicKey) {
   return getForwardPayload(unsignedPayload) +
     signature +
     signerPublicKey +
-    "".padStart(8, "0") +
+    ''.padStart(8, '0') +
     getSigningPayload(unsignedPayload)
 }
 

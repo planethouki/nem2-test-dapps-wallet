@@ -7,6 +7,7 @@ import BackgroundStore from './assets/background/BackgroundStore'
 import BackgroundSignConfirm from './assets/background/BackgroundSignConfirm'
 import SignatureDeniedResponse from './assets/models/SignatureDeniedResponse'
 import BackgroundSignConfirms from './assets/background/BackgroundSignConfirms'
+import { from as ObservableFrom, BehaviorSubject } from 'rxjs'
 
 const popupWindowFeatures = 'location=no, width=400, height=400'
 
@@ -16,6 +17,15 @@ const setBadgeText = (text) => {
 
 const store = new BackgroundStore(window.localStorage)
 const confirms = new BackgroundSignConfirms(setBadgeText)
+
+const isReadySubject = new BehaviorSubject(false)
+
+ObservableFrom(nem2.getProperties(store.getEndPoint()))
+  .subscribe(({ generationHash, networkType }) => {
+    console.log('background: get network properties', generationHash, networkType)
+    store.setNetworkProperties(generationHash, networkType)
+    isReadySubject.next(true)
+  })
 
 function signatureRequestHandler (signatureRequest) {
   console.log('background: receive SIGNATURE_REQUEST')
@@ -48,6 +58,11 @@ browser.runtime.onMessage.addListener(function (request, sender) {
 })
 
 window.nem2 = {
+  listenBackgroundIsReady (callback) {
+    isReadySubject.subscribe((isReady) => {
+      callback(isReady)
+    })
+  },
   signConfirm: {
     has () {
       return confirms.hasSignConfirm()

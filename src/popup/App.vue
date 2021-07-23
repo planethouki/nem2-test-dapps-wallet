@@ -1,12 +1,17 @@
 <template>
   <div>
     <hello-world />
-    <div v-if="existsConfirmRequest">
+    <div v-if="isBackgroundLoaded">
+      <div v-if="existsConfirmRequest">
       <span>
         Signing Request: {{ signConfirmMessage }}
       </span>
-      <button @click="confirm">OK</button>
-      <button @click="cancel">Cancel</button>
+        <button @click="confirm">OK</button>
+        <button @click="cancel">Cancel</button>
+      </div>
+    </div>
+    <div v-else>
+      Loading...
     </div>
   </div>
 </template>
@@ -21,12 +26,16 @@ export default {
     return {
       existsConfirmRequest: false,
       signConfirmManager: null,
-      signConfirmMessage: null
+      signConfirmMessage: null,
+      isBackgroundLoaded: false
     }
   },
   created () {
     browser.runtime.getBackgroundPage().then((background) => {
       this.signConfirmManager = background.nem2.signConfirm
+      background.nem2.listenBackgroundIsReady((isReady) => {
+        this.isBackgroundLoaded = isReady
+      })
       const handler = () => {
         if (this.signConfirmManager.has()) {
           this.existsConfirmRequest = true
