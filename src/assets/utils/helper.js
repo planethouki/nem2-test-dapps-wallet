@@ -21,39 +21,21 @@ function hexToUint8Array (hex) {
   }))
 }
 
-function parseNodeVersion (num) {
-  const hex = `00000000${Number(num).toString(16)}`.substr(-8)
-  const strArray = []
-  for (let i = 0; i < 8; i += 2) {
-    const octet = Number(`0x${hex[i]}${hex[i + 1]}`).toString(10)
-    strArray.push(octet)
-  }
-
-  return strArray.join('.')
-}
-
-function dec2hex8 (num) {
-  return `0000000000000000${Number(num).toString(16)}`.substr(-16).toUpperCase()
-}
-
 function getSigningPayload (payload) {
   return payload.substr((8 + 64 + 32 + 4) * 2)
 }
 
-function getForwardPayload (payload) {
-  return payload.substring(0, (8) * 2)
+function getSizePayload (payload) {
+  return payload.substring(0, (4) * 2)
 }
 
 function spliceSignature (unsignedPayload, signature, signerPublicKey) {
-  return getForwardPayload(unsignedPayload) +
+  return getSizePayload(unsignedPayload) +
+    ''.padStart(8, '0') +
     signature +
     signerPublicKey +
     ''.padStart(8, '0') +
     getSigningPayload(unsignedPayload)
-}
-
-function createDeadline (catapultTime) {
-  return Number(catapultTime).toString(16).padStart(16, '0').toUpperCase()
 }
 
 function getTransactionType (payload) {
@@ -65,11 +47,8 @@ module.exports = {
   endian,
   uint8ArrayToHex,
   hexToUint8Array,
-  parseNodeVersion,
-  dec2hex8,
   getSigningPayload,
-  getForwardPayload,
   spliceSignature,
-  createDeadline,
+  getSizePayload,
   getTransactionType
 }
