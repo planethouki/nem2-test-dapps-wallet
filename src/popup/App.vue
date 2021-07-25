@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <hello-world />
-    <div v-if="isBackgroundLoaded">
+    <div v-if="isBackgroundReady">
       <div v-if="existsConfirmRequest">
       <span>
         Signing Request: {{ signConfirmMessage }}
@@ -27,14 +27,14 @@ export default {
       existsConfirmRequest: false,
       signConfirmManager: null,
       signConfirmMessage: null,
-      isBackgroundLoaded: false
+      isBackgroundReady: false
     }
   },
   created () {
     browser.runtime.getBackgroundPage().then((background) => {
       this.signConfirmManager = background.nem2.signConfirm
       background.nem2.listenBackgroundIsReady((isReady) => {
-        this.isBackgroundLoaded = isReady
+        this.isBackgroundReady = isReady
       })
       const handler = () => {
         if (this.signConfirmManager.has()) {
