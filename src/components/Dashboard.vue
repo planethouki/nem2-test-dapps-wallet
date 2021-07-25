@@ -1,19 +1,16 @@
 <template>
   <div>
-    <p class="position-relative">
-      <span class="label">Address</span>
-      <span class="p">{{ address }}</span>
-    </p>
-    <p class="position-relative">
-      <span class="label">Network</span>
-      <span class="p">{{ networkName }}</span>
-    </p>
+    <labeled-item label="Address" :description="address" />
+    <labeled-item label="Network" :description="networkName" />
   </div>
 </template>
 
 <script>
+import LabeledItem from './LabeledItem'
+
 export default {
   name: 'Dashboard',
+  components: { LabeledItem },
   props: {
     accountInfo: {
       type: Object,
@@ -36,12 +33,4 @@ export default {
 </script>
 
 <style scoped>
-.label {
-  position: absolute;
-  top: -0.4rem;
-  font-size: 0.5rem;
-}
-.p {
-  font-size: 0.8rem;
-}
 </style>
