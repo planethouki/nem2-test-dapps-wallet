@@ -1,13 +1,13 @@
 <template>
-  <div>
+  <div class="container">
     <hello-world />
     <div v-if="isBackgroundLoaded">
       <div v-if="existsConfirmRequest">
       <span>
         Signing Request: {{ signConfirmMessage }}
       </span>
-        <button @click="confirm">OK</button>
-        <button @click="cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" @click="confirm">OK</button>
+        <button type="button" class="btn btn-primary" @click="cancel">Cancel</button>
       </div>
     </div>
     <div v-else>
