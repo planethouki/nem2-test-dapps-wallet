@@ -5,10 +5,8 @@
       <template v-if="isInSettings">
         <settings @save="saveSettings" @back="isInSettings = false" />
       </template>
-      <template v-else>
-        <dashboard :accountInfo="accountInfo" />
-        <hr />
-        <div v-if="existsConfirmRequest">
+      <template v-else-if="existsConfirmRequest">
+        <div>
           <p>
             Signing Request
           </p>
@@ -23,6 +21,9 @@
             </div>
           </div>
         </div>
+      </template>
+      <template v-else>
+        <dashboard :accountInfo="accountInfo" />
         <div class="position-absolute" style="top: 5px; right: 5px;">
           <button
             type="button"
