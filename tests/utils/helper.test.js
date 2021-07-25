@@ -31,4 +31,13 @@ describe('helper', () => {
     expect(helper.getTransactionType(payload)).toBe(16724)
   })
 
+  test('getNetworkTypeString', () => {
+    expect(helper.getNetworkTypeString(104)).toBe('MAIN_NET')
+    expect(helper.getNetworkTypeString(152)).toBe('TEST_NET')
+    expect(helper.getNetworkTypeString(96)).toBe('MIJIN')
+    expect(helper.getNetworkTypeString(144)).toBe('MIJIN_TEST')
+    expect(helper.getNetworkTypeString(120)).toBe('PRIVATE')
+    expect(helper.getNetworkTypeString(168)).toBe('PRIVATE_TEST')
+  })
+
 })

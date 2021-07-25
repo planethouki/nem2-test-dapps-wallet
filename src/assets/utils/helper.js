@@ -43,6 +43,23 @@ function getTransactionType (payload) {
   return Number(`0x${endian(hex)}`)
 }
 
+function getNetworkTypeString (networkType) {
+  switch (networkType) {
+    case 0x68:
+      return 'MAIN_NET'
+    case 0x98:
+      return 'TEST_NET'
+    case 0x60:
+      return 'MIJIN'
+    case 0x90:
+      return 'MIJIN_TEST'
+    case 0x78:
+      return 'PRIVATE'
+    case 0xa8:
+      return 'PRIVATE_TEST'
+  }
+}
+
 module.exports = {
   endian,
   uint8ArrayToHex,
@@ -50,5 +67,6 @@ module.exports = {
   getSigningPayload,
   spliceSignature,
   getSizePayload,
-  getTransactionType
+  getTransactionType,
+  getNetworkTypeString
 }
