@@ -77,7 +77,8 @@ window.nem2 = {
     return new AccountInfoDisplayRequest(
       uuid(),
       store.getAddress(),
-      helper.getNetworkTypeString(store.getNetworkType()))
+      helper.getNetworkTypeString(store.getNetworkType()),
+      store.getEndPoint())
   },
   signConfirm: {
     has () {

@@ -2,6 +2,7 @@
   <div>
     <labeled-item label="Address" :description="address" />
     <labeled-item label="Network" :description="networkName" />
+    <labeled-item label="Node" :description="endPoint" />
   </div>
 </template>
 
@@ -27,6 +28,11 @@ export default {
       if (!this.accountInfo) return ''
       if (!this.accountInfo.networkName) return ''
       return this.accountInfo.networkName
+    },
+    endPoint () {
+      if (!this.accountInfo) return ''
+      if (!this.accountInfo.endPoint) return ''
+      return this.accountInfo.endPoint
     }
   }
 }
