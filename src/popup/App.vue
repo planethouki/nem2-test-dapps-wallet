@@ -11,7 +11,8 @@
       </div>
     </div>
     <div v-else>
-      Loading...
+      <div class="spinner-grow spinner-grow-sm" role="status"></div>
+      <span>Loading...</span>
     </div>
   </div>
 </template>
