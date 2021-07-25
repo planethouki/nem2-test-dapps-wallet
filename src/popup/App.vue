@@ -5,11 +5,19 @@
       <dashboard :accountInfo="accountInfo" />
       <hr />
       <div v-if="existsConfirmRequest">
-        <span>
-          Signing Request: {{ signConfirmMessage }}
-        </span>
-        <button type="button" class="btn btn-primary" @click="confirm">OK</button>
-        <button type="button" class="btn btn-primary" @click="cancel">Cancel</button>
+        <p>
+          Signing Request
+        </p>
+        <labeled-item label="Request Message" :description="signConfirmMessage" />
+        <div class="d-flex">
+          <div>
+            <button type="button" class="btn btn-primary" @click="confirm">OK</button>
+          </div>
+          <div class="px-3"></div>
+          <div>
+            <button type="button" class="btn btn-secondary" @click="cancel">Cancel</button>
+          </div>
+        </div>
       </div>
     </div>
     <div v-else>
@@ -22,10 +30,11 @@
 <script>
 import HelloWorld from '@/components/HelloWorld.vue'
 import Dashboard from '@/components/Dashboard.vue'
+import LabeledItem from '@/components/LabeledItem'
 
 export default {
   name: 'App',
-  components: { HelloWorld, Dashboard },
+  components: { LabeledItem, HelloWorld, Dashboard },
   data () {
     return {
       existsConfirmRequest: false,
