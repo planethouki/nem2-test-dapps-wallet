@@ -2,10 +2,12 @@
   <div class="container">
     <hello-world />
     <div v-if="isBackgroundReady">
+      <dashboard :accountInfo="accountInfo" />
+      <hr />
       <div v-if="existsConfirmRequest">
-      <span>
-        Signing Request: {{ signConfirmMessage }}
-      </span>
+        <span>
+          Signing Request: {{ signConfirmMessage }}
+        </span>
         <button type="button" class="btn btn-primary" @click="confirm">OK</button>
         <button type="button" class="btn btn-primary" @click="cancel">Cancel</button>
       </div>
@@ -19,36 +21,36 @@
 
 <script>
 import HelloWorld from '@/components/HelloWorld.vue'
+import Dashboard from '@/components/Dashboard.vue'
 
 export default {
   name: 'App',
-  components: { HelloWorld },
+  components: { HelloWorld, Dashboard },
   data () {
     return {
       existsConfirmRequest: false,
       signConfirmManager: null,
       signConfirmMessage: null,
-      isBackgroundReady: false
+      isBackgroundReady: false,
+      accountInfo: null
     }
   },
   created () {
-    browser.runtime.getBackgroundPage().then((background) => {
-      this.signConfirmManager = background.nem2.signConfirm
-      background.nem2.listenBackgroundIsReady((isReady) => {
+    browser.runtime.getBackgroundPage().then(({ nem2 }) => {
+      this.signConfirmManager = nem2.signConfirm
+      nem2.listenBackgroundIsReady((isReady) => {
         this.isBackgroundReady = isReady
+        if (!isReady) return
+        this.accountInfo = nem2.getAccountInfo()
       })
       const handler = () => {
-        if (this.signConfirmManager.has()) {
-          this.existsConfirmRequest = true
-          this.signConfirmMessage = this.signConfirmManager.firstMessage()
-        } else {
-          this.existsConfirmRequest = false
-        }
+        const has = this.signConfirmManager.has()
+        this.existsConfirmRequest = has
+        if (!has) return
+        this.signConfirmMessage = this.signConfirmManager.firstMessage()
       }
       handler()
-      this.signConfirmManager.addListener(() => {
-        handler()
-      })
+      this.signConfirmManager.addListener(handler)
     })
   },
   methods: {

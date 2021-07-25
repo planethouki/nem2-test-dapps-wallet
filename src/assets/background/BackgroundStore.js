@@ -4,11 +4,13 @@ module.exports = class BackgroundStore {
   networkType
   endPoint
   publicKey
+  address
 
   constructor (localStorage) {
     this.localStorage = localStorage
     this.endPoint = 'https://dg0nbr5d1ohfy.cloudfront.net:443'
     this.publicKey = 'C65B49BA7673BFEC3EFD04DE7EF412A6346F4BA745AAC09649E8CAFE1AC38580'
+    this.address = 'TCZ5KXKSAJA74A5ECZCXMHOHKFVQ36YSONW4RSA'
   }
 
   getPrivateKey () {
@@ -31,6 +33,10 @@ module.exports = class BackgroundStore {
 
   getPublicKey () {
     return this.publicKey
+  }
+
+  getAddress () {
+    return this.address
   }
 
   getNetworkType () {

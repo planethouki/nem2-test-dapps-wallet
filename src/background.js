@@ -1,13 +1,15 @@
+import { v4 as uuid } from 'uuid'
+import { from as ObservableFrom, BehaviorSubject } from 'rxjs'
 import nem2 from './assets/utils/nem2'
 import ModelType from './assets/models/ModelType'
 import hash from './assets/utils/hash'
-import SignatureResponse from './assets/models/SignatureResponse'
 import helper from './assets/utils/helper'
+import SignatureResponse from './assets/models/SignatureResponse'
 import BackgroundStore from './assets/background/BackgroundStore'
 import BackgroundSignConfirm from './assets/background/BackgroundSignConfirm'
 import SignatureDeniedResponse from './assets/models/SignatureDeniedResponse'
 import BackgroundSignConfirms from './assets/background/BackgroundSignConfirms'
-import { from as ObservableFrom, BehaviorSubject } from 'rxjs'
+import AccountInfoResponse from './assets/models/AccountInfoResponse'
 
 const popupWindowFeatures = 'location=no, width=400, height=400'
 
@@ -70,6 +72,12 @@ window.nem2 = {
     isReadySubject.subscribe((isReady) => {
       callback(isReady)
     })
+  },
+  getAccountInfo () {
+    return new AccountInfoResponse(
+      uuid(),
+      store.getAddress(),
+      helper.getNetworkTypeString(store.getNetworkType()))
   },
   signConfirm: {
     has () {
