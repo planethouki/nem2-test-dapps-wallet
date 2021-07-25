@@ -9,7 +9,7 @@ import BackgroundStore from './assets/background/BackgroundStore'
 import BackgroundSignConfirm from './assets/background/BackgroundSignConfirm'
 import SignatureDeniedResponse from './assets/models/SignatureDeniedResponse'
 import BackgroundSignConfirms from './assets/background/BackgroundSignConfirms'
-import AccountInfoResponse from './assets/models/AccountInfoResponse'
+import AccountInfoDisplayRequest from './assets/models/AccountInfoDisplayRequest'
 
 const popupWindowFeatures = 'location=no, width=400, height=400'
 
@@ -74,7 +74,7 @@ window.nem2 = {
     })
   },
   getAccountInfo () {
-    return new AccountInfoResponse(
+    return new AccountInfoDisplayRequest(
       uuid(),
       store.getAddress(),
       helper.getNetworkTypeString(store.getNetworkType()))
