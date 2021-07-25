@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container mt-3">
     <hello-world />
     <template v-if="isBackgroundReady">
       <template v-if="isInSettings">
