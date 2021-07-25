@@ -24,10 +24,10 @@ export default {
 <style scoped>
 .label {
   position: absolute;
-  top: -0.4rem;
-  font-size: 0.5rem;
+  top: -0.5rem;
+  font-size: 0.6rem;
 }
 .p {
-  font-size: 0.8rem;
+  overflow-wrap: anywhere;
 }
 </style>
