@@ -7,7 +7,7 @@
         class="form-control"
         id="inputPrivateKey"
         aria-describedby="privateKeyHelp"
-        :value="inputPrivateKey">
+        v-model="inputPrivateKey">
       <div id="privateKeyHelp" class="form-text"></div>
     </div>
     <div class="mb-3">
@@ -16,7 +16,7 @@
         type="text"
         class="form-control"
         id="inputNode"
-        :value="inputNode">
+        v-model="inputNode">
     </div>
     <button type="button" class="btn btn-primary" @click="save">Save</button>
     <span class="px-1"></span>
@@ -27,6 +27,7 @@
 <script>
 import SettingsSaveRequest from '@/assets/models/SettingsSaveRequest'
 import { v4 as uuid } from 'uuid'
+import crypto from '../assets/utils/crypto'
 
 export default {
   name: 'Settings',
@@ -38,8 +39,11 @@ export default {
   },
   methods: {
     save () {
-      const result = new SettingsSaveRequest(uuid(), this.inputPrivateKey, this.inputNode)
-      this.$emit('save', result)
+      browser.runtime.getBackgroundPage().then(({ nem2 }) => {
+        const encrypted = crypto.encrypt(this.inputPrivateKey, nem2.getPassword())
+        nem2.setSettings(new SettingsSaveRequest(uuid(), encrypted, this.inputNode))
+        this.$emit('saved')
+      })
     },
     back () {
       this.$emit('back')

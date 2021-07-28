@@ -3,7 +3,7 @@
     <hello-world />
     <template v-if="isBackgroundReady">
       <template v-if="isInSettings">
-        <settings @save="saveSettings" @back="isInSettings = false" />
+        <settings @saved="saved" @back="isInSettings = false" />
       </template>
       <template v-else-if="existsConfirmRequest">
         <div>
@@ -65,7 +65,10 @@ export default {
       this.signConfirmManager = nem2.signConfirm
       nem2.listenBackgroundIsReady((isReady) => {
         this.isBackgroundReady = isReady
-        if (!isReady) return
+        if (!isReady) {
+          this.isInSettings = false
+          return
+        }
         this.accountInfo = nem2.getAccountInfo()
       })
       const handler = () => {
@@ -85,7 +88,7 @@ export default {
     cancel () {
       this.signConfirmManager.firstCancel()
     },
-    saveSettings (settingsSaveRequest) {
+    saved () {
       this.isInSettings = false
     }
   }

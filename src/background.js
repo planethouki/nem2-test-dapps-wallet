@@ -1,5 +1,4 @@
-import { v4 as uuid } from 'uuid'
-import { from as ObservableFrom, BehaviorSubject } from 'rxjs'
+import { BehaviorSubject } from 'rxjs'
 import nem2 from './assets/utils/nem2'
 import ModelType from './assets/models/ModelType'
 import hash from './assets/utils/hash'
@@ -9,7 +8,7 @@ import BackgroundStore from './assets/background/BackgroundStore'
 import BackgroundSignConfirm from './assets/background/BackgroundSignConfirm'
 import SignatureDeniedResponse from './assets/models/SignatureDeniedResponse'
 import BackgroundSignConfirms from './assets/background/BackgroundSignConfirms'
-import AccountInfoDisplayRequest from './assets/models/AccountInfoDisplayRequest'
+import PopUpFacade from './assets/background/PopUpFacade'
 
 const popupWindowFeatures = 'location=no, width=400, height=400'
 
@@ -22,12 +21,16 @@ const confirms = new BackgroundSignConfirms(setBadgeText)
 
 const isReadySubject = new BehaviorSubject(false)
 
-ObservableFrom(nem2.getProperties(store.getEndPoint()))
-  .subscribe(({ generationHash, networkType }) => {
-    console.log('background: get network properties', generationHash, networkType)
-    store.setNetworkProperties(generationHash, networkType)
-    isReadySubject.next(true)
-  })
+const updateNetworkProperties = () => {
+  return nem2.getProperties(store.getEndPoint())
+    .then(({ generationHash, networkType }) => {
+      console.log('background: get network properties', generationHash, networkType)
+      store.setNetworkProperties(generationHash, networkType)
+      isReadySubject.next(true)
+    })
+}
+
+updateNetworkProperties()
 
 function signatureRequestHandler (signatureRequest) {
   console.log('background: receive SIGNATURE_REQUEST')
@@ -67,34 +70,6 @@ browser.runtime.onMessage.addListener(function (request, sender) {
   }
 })
 
-window.nem2 = {
-  listenBackgroundIsReady (callback) {
-    isReadySubject.subscribe((isReady) => {
-      callback(isReady)
-    })
-  },
-  getAccountInfo () {
-    return new AccountInfoDisplayRequest(
-      uuid(),
-      store.getAddress(),
-      helper.getNetworkTypeString(store.getNetworkType()),
-      store.getEndPoint())
-  },
-  signConfirm: {
-    has () {
-      return confirms.hasSignConfirm()
-    },
-    firstMessage () {
-      return 'hoge'
-    },
-    addListener (callback) {
-      return confirms.addSignConfirmListener(callback)
-    },
-    firstOk () {
-      confirms.firstOk()
-    },
-    firstCancel () {
-      confirms.firstCancel()
-    }
-  }
-}
+window.nem2 = new PopUpFacade(store, isReadySubject, confirms, updateNetworkProperties)
+
+window.store = store
