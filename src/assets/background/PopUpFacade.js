@@ -5,22 +5,22 @@ import helper from '../utils/helper'
 export default class PopUpFacade {
   store
   isReadySubject
-  signConfirm
+  signConfirmManager
   updateNetworkProperties
 
   constructor (store, isReadySubject, confirms, updateNetworkProperties) {
     this.store = store
     this.isReadySubject = isReadySubject
     this.updateNetworkProperties = updateNetworkProperties
-    this.signConfirm = {
-      has () {
+    this.signConfirmManager = {
+      hasSignConfirm () {
         return confirms.hasSignConfirm()
       },
       firstMessage () {
         return 'hoge'
       },
       addListener (callback) {
-        return confirms.addSignConfirmListener(callback)
+        confirms.addSignConfirmListener(callback)
       },
       firstOk () {
         confirms.firstOk()
@@ -35,6 +35,10 @@ export default class PopUpFacade {
     this.isReadySubject.subscribe((isReady) => {
       callback(isReady)
     })
+  }
+
+  isBackgroundSetUpFinished () {
+    return this.store.isSetUpFinished()
   }
 
   getAccountInfo () {
@@ -53,7 +57,6 @@ export default class PopUpFacade {
       this.store.setEncryptedPrivateKey(settingsSaveRequest.inputEncryptedPrivateKey)
     }
 
-    this.isReadySubject.next(false)
     this.updateNetworkProperties()
   }
 

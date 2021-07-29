@@ -1,5 +1,12 @@
+const SETUP_FINISHED = 'SETUP_FINISHED'
+const END_POINT = 'END_POINT'
+const PUBLIC_KEY = 'PUBLIC_KEY'
+const ADDRESS = 'ADDRESS'
+const ENCRYPTED_PRIVATE_KEY = 'ENCRYPTED_PRIVATE_KEY'
+
 export default class BackgroundStore {
   localStorage
+  setUpFinished = false
   generationHashMemory
   networkTypeMemory
   endPoint
@@ -10,15 +17,21 @@ export default class BackgroundStore {
 
   constructor (localStorage) {
     this.localStorage = localStorage
-    this.endPoint = 'https://dg0nbr5d1ohfy.cloudfront.net:443'
-    this.publicKey = 'C65B49BA7673BFEC3EFD04DE7EF412A6346F4BA745AAC09649E8CAFE1AC38580'
-    this.address = 'TCZ5KXKSAJA74A5ECZCXMHOHKFVQ36YSONW4RSA'
+    if (localStorage.getItem(SETUP_FINISHED) === null) {
+      return
+    }
+
+    this.setUpFinished = true
+
+    this.endPoint = localStorage.getItem(END_POINT) ?? 'https://dg0nbr5d1ohfy.cloudfront.net:443'
+    this.publicKey = localStorage.getItem(PUBLIC_KEY) ?? 'C65B49BA7673BFEC3EFD04DE7EF412A6346F4BA745AAC09649E8CAFE1AC38580'
+    this.address = localStorage.getItem(ADDRESS) ?? 'TCZ5KXKSAJA74A5ECZCXMHOHKFVQ36YSONW4RSA'
     this.password = 'password'
-    this.encryptedPrivateKey = 'U2FsdGVkX1+lJACmqEDPQHqgjt3XA2Q/vhooS8hNWpzbHXmm2ZNOBnqvYacN4YEyCuaw1pWx/no/vPR/A9lIw0BIF7v4NJnWXoOszb2bH8ejAv2MEZd7hcF3s1XVxVtb'
+    this.encryptedPrivateKey = localStorage.getItem(ENCRYPTED_PRIVATE_KEY) ?? 'U2FsdGVkX1+lJACmqEDPQHqgjt3XA2Q/vhooS8hNWpzbHXmm2ZNOBnqvYacN4YEyCuaw1pWx/no/vPR/A9lIw0BIF7v4NJnWXoOszb2bH8ejAv2MEZd7hcF3s1XVxVtb'
   }
 
-  getPrivateKey () {
-    return '25B3F54217340F7061D02676C4B928ADB4395EB70A2A52D2A11E2F4AE011B03E'
+  isSetUpFinished () {
+    return this.setUpFinished
   }
 
   getEncryptedPrivateKey () {

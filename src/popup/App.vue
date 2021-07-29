@@ -2,36 +2,11 @@
   <div class="container mt-3">
     <hello-world />
     <template v-if="isBackgroundReady">
-      <template v-if="isInSettings">
-        <settings @saved="saved" @back="isInSettings = false" />
-      </template>
-      <template v-else-if="existsConfirmRequest">
-        <div>
-          <p>
-            Signing Request
-          </p>
-          <labeled-item label="Request Message" :description="signConfirmMessage" />
-          <div class="d-flex">
-            <div>
-              <button type="button" class="btn btn-primary" @click="confirm">OK</button>
-            </div>
-            <div class="px-3"></div>
-            <div>
-              <button type="button" class="btn btn-secondary" @click="cancel">Cancel</button>
-            </div>
-          </div>
-        </div>
+      <template v-if="isBackgroundSetUpFinished">
+        <dashboard :nem2="nem2" />
       </template>
       <template v-else>
-        <dashboard :accountInfo="accountInfo" />
-        <div class="position-absolute" style="top: 5px; right: 5px;">
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-secondary rounded-pill p-0"
-            @click="isInSettings = true">
-            &#x2699;
-          </button>
-        </div>
+        <p>Need SetUp</p>
       </template>
     </template>
     <div v-else>
@@ -44,53 +19,26 @@
 <script>
 import HelloWorld from '@/components/HelloWorld.vue'
 import Dashboard from '@/components/Dashboard.vue'
-import LabeledItem from '@/components/LabeledItem'
-import Settings from '@/components/Settings'
 
 export default {
   name: 'App',
-  components: { LabeledItem, HelloWorld, Dashboard, Settings },
+  components: { HelloWorld, Dashboard },
   data () {
     return {
-      existsConfirmRequest: false,
-      signConfirmManager: null,
-      signConfirmMessage: null,
+      isBackgroundSetUpFinished: false,
       isBackgroundReady: false,
-      accountInfo: null,
-      isInSettings: false
+      nem2: null
     }
   },
   created () {
     browser.runtime.getBackgroundPage().then(({ nem2 }) => {
-      this.signConfirmManager = nem2.signConfirm
+      this.nem2 = nem2
+      this.isBackgroundSetUpFinished = nem2.isBackgroundSetUpFinished()
+      console.log(nem2.isBackgroundSetUpFinished())
       nem2.listenBackgroundIsReady((isReady) => {
         this.isBackgroundReady = isReady
-        if (!isReady) {
-          this.isInSettings = false
-          return
-        }
-        this.accountInfo = nem2.getAccountInfo()
       })
-      const handler = () => {
-        const has = this.signConfirmManager.has()
-        this.existsConfirmRequest = has
-        if (!has) return
-        this.signConfirmMessage = this.signConfirmManager.firstMessage()
-      }
-      handler()
-      this.signConfirmManager.addListener(handler)
     })
-  },
-  methods: {
-    confirm () {
-      this.signConfirmManager.firstOk()
-    },
-    cancel () {
-      this.signConfirmManager.firstCancel()
-    },
-    saved () {
-      this.isInSettings = false
-    }
   }
 }
 </script>

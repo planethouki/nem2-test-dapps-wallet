@@ -3,6 +3,7 @@ import nem2 from './assets/utils/nem2'
 import ModelType from './assets/models/ModelType'
 import hash from './assets/utils/hash'
 import helper from './assets/utils/helper'
+import crypto from './assets/utils/crypto'
 import SignatureResponse from './assets/models/SignatureResponse'
 import BackgroundStore from './assets/background/BackgroundStore'
 import BackgroundSignConfirm from './assets/background/BackgroundSignConfirm'
@@ -22,6 +23,11 @@ const confirms = new BackgroundSignConfirms(setBadgeText)
 const isReadySubject = new BehaviorSubject(false)
 
 const updateNetworkProperties = () => {
+  if (!store.isSetUpFinished()) {
+    isReadySubject.next(true)
+    return Promise.resolve()
+  }
+  isReadySubject.next(false)
   return nem2.getProperties(store.getEndPoint())
     .then(({ generationHash, networkType }) => {
       console.log('background: get network properties', generationHash, networkType)
@@ -45,7 +51,8 @@ function signatureRequestHandler (signatureRequest) {
       return new SignatureDeniedResponse(signatureRequest.id)
     }
     const unsignedPayload = signatureRequest.payload
-    const signature = nem2.sign(store.getPrivateKey(), unsignedPayload, store.getGenerationHash())
+    const signature = nem2.sign(crypto.decrypt(store.getEncryptedPrivateKey(),
+      store.getPassword()), unsignedPayload, store.getGenerationHash())
     const signerPublicKey = store.getPublicKey()
     const payload = helper.spliceSignature(unsignedPayload, signature, signerPublicKey)
     const txHash = hash.getTransactionHash(payload, store.getGenerationHash())
@@ -71,5 +78,3 @@ browser.runtime.onMessage.addListener(function (request, sender) {
 })
 
 window.nem2 = new PopUpFacade(store, isReadySubject, confirms, updateNetworkProperties)
-
-window.store = store
