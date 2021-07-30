@@ -1,7 +1,7 @@
 <template>
   <div>
     <template v-if="isInSettings">
-      <settings @saved="saved" @back="isInSettings = false" />
+      <settings :nem2="nem2" @saved="saved" @back="isInSettings = false" />
     </template>
     <template v-else-if="existsConfirmRequest">
       <div>

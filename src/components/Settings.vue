@@ -1,16 +1,6 @@
 <template>
   <div>
     <div class="mb-3">
-      <label for="inputPrivateKey" class="form-label">Private Key</label>
-      <input
-        type="text"
-        class="form-control"
-        id="inputPrivateKey"
-        aria-describedby="privateKeyHelp"
-        v-model="inputPrivateKey">
-      <div id="privateKeyHelp" class="form-text"></div>
-    </div>
-    <div class="mb-3">
       <label for="inputNode" class="form-label">Node</label>
       <input
         type="text"
@@ -27,10 +17,15 @@
 <script>
 import SettingsSaveRequest from '@/assets/models/SettingsSaveRequest'
 import { v4 as uuid } from 'uuid'
-import crypto from '../assets/utils/crypto'
 
 export default {
   name: 'Settings',
+  props: {
+    nem2: {
+      type: Object,
+      required: true
+    }
+  },
   data () {
     return {
       inputPrivateKey: '',
@@ -39,11 +34,8 @@ export default {
   },
   methods: {
     save () {
-      browser.runtime.getBackgroundPage().then(({ nem2 }) => {
-        const encrypted = crypto.encrypt(this.inputPrivateKey, nem2.getPassword())
-        nem2.setSettings(new SettingsSaveRequest(uuid(), encrypted, this.inputNode))
-        this.$emit('saved')
-      })
+      this.nem2.setSettings(new SettingsSaveRequest(uuid(), this.inputNode))
+      this.$emit('saved')
     },
     back () {
       this.$emit('back')
