@@ -46,6 +46,7 @@
 import SetUpSaveRequest from '@/assets/models/SetUpSaveRequest'
 import { v4 as uuid } from 'uuid'
 import crypto from '../assets/utils/crypto'
+import nem2 from '../assets/utils/nem2'
 
 export default {
   name: 'SetUp',
@@ -64,7 +65,11 @@ export default {
       console.log(`SetUp.vue checkValidity ${isValid}`)
       if (!isValid) return
       const encrypted = crypto.encrypt(this.inputPrivateKey, this.inputPassword)
-      const req = new SetUpSaveRequest(uuid(), encrypted, this.inputNode, this.inputPassword)
+      const publicKey = nem2.privateKeyToPublicKey(this.inputPrivateKey)
+      const req = new SetUpSaveRequest(uuid(), encrypted, this.inputNode, this.inputPassword, publicKey)
+      this.inputPrivateKey = ''
+      this.inputNode = ''
+      this.inputPassword = ''
       this.$emit('saved', req)
     }
   }

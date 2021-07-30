@@ -2,14 +2,16 @@ const ModelType = require('./ModelType')
 const ModelBase = require('./ModelBase')
 
 module.exports = class SetUpSaveRequest extends ModelBase {
-  inputEncryptedPrivateKey
+  encryptedPrivateKey
   inputEndPoint
   inputPassword
+  publicKey
 
-  constructor (id, inputEncryptedPrivateKey, inputNode, inputPassword) {
+  constructor (id, encryptedPrivateKey, inputNode, inputPassword, publicKey) {
     super(ModelType.SETUP_SAVE_REQUEST, id)
-    this.inputEncryptedPrivateKey = inputEncryptedPrivateKey
+    this.encryptedPrivateKey = encryptedPrivateKey
     this.inputEndPoint = inputNode
     this.inputPassword = inputPassword
+    this.publicKey = publicKey
   }
 }

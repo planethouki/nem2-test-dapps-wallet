@@ -12,7 +12,7 @@ export default class BackgroundStore {
   endPoint
   publicKey
   address
-  password
+  passwordMemory
   encryptedPrivateKey
 
   constructor (localStorage) {
@@ -26,7 +26,6 @@ export default class BackgroundStore {
     this.endPoint = localStorage.getItem(END_POINT) ?? 'https://dg0nbr5d1ohfy.cloudfront.net:443'
     this.publicKey = localStorage.getItem(PUBLIC_KEY) ?? 'C65B49BA7673BFEC3EFD04DE7EF412A6346F4BA745AAC09649E8CAFE1AC38580'
     this.address = localStorage.getItem(ADDRESS) ?? 'TCZ5KXKSAJA74A5ECZCXMHOHKFVQ36YSONW4RSA'
-    this.password = 'password'
     this.encryptedPrivateKey = localStorage.getItem(ENCRYPTED_PRIVATE_KEY) ?? 'U2FsdGVkX1+lJACmqEDPQHqgjt3XA2Q/vhooS8hNWpzbHXmm2ZNOBnqvYacN4YEyCuaw1pWx/no/vPR/A9lIw0BIF7v4NJnWXoOszb2bH8ejAv2MEZd7hcF3s1XVxVtb'
   }
 
@@ -34,15 +33,12 @@ export default class BackgroundStore {
     return this.setUpFinished
   }
 
-  finishSetUp () {
-    this.setUpFinished = true
-  }
-
   getEncryptedPrivateKey () {
     return this.encryptedPrivateKey
   }
 
   setEncryptedPrivateKey (encryptedPrivateKey) {
+    this.localStorage.setItem(ENCRYPTED_PRIVATE_KEY, encryptedPrivateKey)
     this.encryptedPrivateKey = encryptedPrivateKey
   }
 
@@ -73,6 +69,7 @@ export default class BackgroundStore {
   }
 
   setEndPoint (endPoint) {
+    this.localStorage.setItem(END_POINT, endPoint)
     this.endPoint = endPoint
   }
 
@@ -80,11 +77,20 @@ export default class BackgroundStore {
     return this.endPoint
   }
 
-  setPassword (password) {
-    this.password = password
+  setUp (encryptedPrivateKey, endPoint, password, publicKey) {
+    this.localStorage.setItem(ENCRYPTED_PRIVATE_KEY, encryptedPrivateKey)
+    this.encryptedPrivateKey = encryptedPrivateKey
+    this.localStorage.setItem(END_POINT, endPoint)
+    this.endPoint = endPoint
+
+    this.passwordMemory = password
+    this.localStorage.setItem(PUBLIC_KEY, publicKey)
+    this.publicKey = publicKey
+    localStorage.setItem(SETUP_FINISHED, 'TRUE')
+    this.setUpFinished = true
   }
 
   getPassword () {
-    return this.password
+    return this.passwordMemory
   }
 }
