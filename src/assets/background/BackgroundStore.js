@@ -1,7 +1,6 @@
 const SETUP_FINISHED = 'SETUP_FINISHED'
 const END_POINT = 'END_POINT'
 const PUBLIC_KEY = 'PUBLIC_KEY'
-const ADDRESS = 'ADDRESS'
 const ENCRYPTED_PRIVATE_KEY = 'ENCRYPTED_PRIVATE_KEY'
 
 export default class BackgroundStore {
@@ -23,10 +22,9 @@ export default class BackgroundStore {
 
     this.setUpFinished = true
 
-    this.endPoint = localStorage.getItem(END_POINT) ?? 'https://dg0nbr5d1ohfy.cloudfront.net:443'
-    this.publicKey = localStorage.getItem(PUBLIC_KEY) ?? 'C65B49BA7673BFEC3EFD04DE7EF412A6346F4BA745AAC09649E8CAFE1AC38580'
-    this.address = localStorage.getItem(ADDRESS) ?? 'TCZ5KXKSAJA74A5ECZCXMHOHKFVQ36YSONW4RSA'
-    this.encryptedPrivateKey = localStorage.getItem(ENCRYPTED_PRIVATE_KEY) ?? 'U2FsdGVkX1+lJACmqEDPQHqgjt3XA2Q/vhooS8hNWpzbHXmm2ZNOBnqvYacN4YEyCuaw1pWx/no/vPR/A9lIw0BIF7v4NJnWXoOszb2bH8ejAv2MEZd7hcF3s1XVxVtb'
+    this.endPoint = localStorage.getItem(END_POINT)
+    this.publicKey = localStorage.getItem(PUBLIC_KEY)
+    this.encryptedPrivateKey = localStorage.getItem(ENCRYPTED_PRIVATE_KEY)
   }
 
   isSetUpFinished () {
@@ -37,19 +35,16 @@ export default class BackgroundStore {
     return this.encryptedPrivateKey
   }
 
-  setEncryptedPrivateKey (encryptedPrivateKey) {
-    this.localStorage.setItem(ENCRYPTED_PRIVATE_KEY, encryptedPrivateKey)
-    this.encryptedPrivateKey = encryptedPrivateKey
-  }
-
   /**
    *
    * @param {string} generationHash
    * @param {int} networkType
+   * @param {string} plainAddress
    */
-  setNetworkProperties (generationHash, networkType) {
+  setNetworkProperties (generationHash, networkType, plainAddress) {
     this.generationHashMemory = generationHash
     this.networkTypeMemory = networkType
+    this.address = plainAddress
   }
 
   getGenerationHash () {
@@ -68,13 +63,13 @@ export default class BackgroundStore {
     return this.networkTypeMemory
   }
 
-  setEndPoint (endPoint) {
-    this.localStorage.setItem(END_POINT, endPoint)
-    this.endPoint = endPoint
-  }
-
   getEndPoint () {
     return this.endPoint
+  }
+
+  setSettings (endPoint) {
+    this.localStorage.setItem(END_POINT, endPoint)
+    this.endPoint = endPoint
   }
 
   setUp (encryptedPrivateKey, endPoint, password, publicKey) {

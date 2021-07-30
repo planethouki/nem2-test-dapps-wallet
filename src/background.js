@@ -2,6 +2,7 @@ import { BehaviorSubject } from 'rxjs'
 import nem2 from './assets/utils/nem2'
 import ModelType from './assets/models/ModelType'
 import hash from './assets/utils/hash'
+import base32 from './assets/utils/base32'
 import helper from './assets/utils/helper'
 import crypto from './assets/utils/crypto'
 import SignatureResponse from './assets/models/SignatureResponse'
@@ -32,7 +33,9 @@ const updateNetworkProperties = () => {
   return nem2.getProperties(store.getEndPoint())
     .then(({ generationHash, networkType }) => {
       console.log('background: get network properties', generationHash, networkType)
-      store.setNetworkProperties(generationHash, networkType)
+      const hexAddress = hash.publicKeyToHexAddress(store.getPublicKey(), networkType)
+      const plainAddress = base32.getBase32EncodeAddress(hexAddress)
+      store.setNetworkProperties(generationHash, networkType, plainAddress)
       isReadySubject.next(true)
     })
 }

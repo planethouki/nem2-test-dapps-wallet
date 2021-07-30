@@ -17,4 +17,13 @@ describe('hash', () => {
     const { publicKeyToHexAddress } = hash
     expect(publicKeyToHexAddress(publicKey)).toBe(rawAddress)
   })
+
+  test('publicKeyToHexAddressPrefix', () => {
+    const publicKey = '713FA4446275F62173186194F4FE898917BC2C05C9273E000461951A3557A255'
+    const rawAddressTest = '98BF45C2D3F0379F1A62626909087D37B196BAAFAE7F4C3C'
+    const rawAddressMain = '68BF45C2D3F0379F1A62626909087D37B196BAAFAE96D6AB'
+    const { publicKeyToHexAddress } = hash
+    expect(publicKeyToHexAddress(publicKey, 152)).toBe(rawAddressTest)
+    expect(publicKeyToHexAddress(publicKey, 104)).toBe(rawAddressMain)
+  })
 })

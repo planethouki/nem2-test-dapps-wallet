@@ -22,13 +22,13 @@ function getTransactionHash (signedTxPayload, generationHash) {
 /**
  *
  * @param {string} publicKey
- * @param prefix
+ * @param {number} prefix
  * @return {string}
  */
-function publicKeyToHexAddress (publicKey, prefix = '98') {
+function publicKeyToHexAddress (publicKey, prefix = 152) {
   const sha3ed = sha3.digest(hexToUint8Array(publicKey))
   const a = new Ripemd160().update(Buffer.from(sha3ed)).digest('hex')
-  const b = prefix + a
+  const b = `00${prefix.toString(16)}`.substr(-2) + a
   const check = uint8ArrayToHex(sha3.digest(hexToUint8Array(b)))
   const c = b + check.substr(0, 6)
   return c.toUpperCase()

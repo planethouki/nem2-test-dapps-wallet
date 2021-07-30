@@ -50,12 +50,7 @@ export default class PopUpFacade {
   }
 
   setSettings (settingsSaveRequest) {
-    if (settingsSaveRequest.existsInputEndPoint) {
-      this.store.setEndPoint(settingsSaveRequest.inputEndPoint)
-    }
-    if (settingsSaveRequest.existsInputEncryptedPrivateKey) {
-      this.store.setEncryptedPrivateKey(settingsSaveRequest.inputEncryptedPrivateKey)
-    }
+    this.store.setSettings(settingsSaveRequest.inputEndPoint)
 
     this.updateNetworkProperties()
   }
