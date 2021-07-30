@@ -23,6 +23,7 @@ const confirms = new BackgroundSignConfirms(setBadgeText)
 const isReadySubject = new BehaviorSubject(false)
 
 const updateNetworkProperties = () => {
+  console.log('background: update network properties')
   if (!store.isSetUpFinished()) {
     isReadySubject.next(true)
     return Promise.resolve()

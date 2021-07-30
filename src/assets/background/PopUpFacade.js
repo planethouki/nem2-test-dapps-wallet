@@ -60,6 +60,14 @@ export default class PopUpFacade {
     this.updateNetworkProperties()
   }
 
+  setUp (setUpSaveRequest) {
+    this.store.setEndPoint(setUpSaveRequest.inputEndPoint)
+    this.store.setEncryptedPrivateKey(setUpSaveRequest.inputEncryptedPrivateKey)
+    this.store.setPassword(setUpSaveRequest.inputPassword)
+    this.store.finishSetUp()
+    this.updateNetworkProperties()
+  }
+
   getPassword () {
     return this.store.getPassword()
   }

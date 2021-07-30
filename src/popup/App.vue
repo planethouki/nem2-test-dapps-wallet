@@ -6,7 +6,7 @@
         <dashboard :nem2="nem2" />
       </template>
       <template v-else>
-        <p>Need SetUp</p>
+        <set-up @saved="setUpSaved" />
       </template>
     </template>
     <div v-else>
@@ -19,10 +19,11 @@
 <script>
 import HelloWorld from '@/components/HelloWorld.vue'
 import Dashboard from '@/components/Dashboard.vue'
+import SetUp from '@/components/SetUp.vue'
 
 export default {
   name: 'App',
-  components: { HelloWorld, Dashboard },
+  components: { HelloWorld, Dashboard, SetUp },
   data () {
     return {
       isBackgroundSetUpFinished: false,
@@ -33,12 +34,17 @@ export default {
   created () {
     browser.runtime.getBackgroundPage().then(({ nem2 }) => {
       this.nem2 = nem2
-      this.isBackgroundSetUpFinished = nem2.isBackgroundSetUpFinished()
-      console.log(nem2.isBackgroundSetUpFinished())
       nem2.listenBackgroundIsReady((isReady) => {
         this.isBackgroundReady = isReady
+        this.isBackgroundSetUpFinished = nem2.isBackgroundSetUpFinished()
       })
     })
+  },
+  methods: {
+    setUpSaved (setUpSaveRequest) {
+      console.log('App.vue setUpSaved')
+      this.nem2.setUp(setUpSaveRequest)
+    }
   }
 }
 </script>

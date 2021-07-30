@@ -34,6 +34,10 @@ export default class BackgroundStore {
     return this.setUpFinished
   }
 
+  finishSetUp () {
+    this.setUpFinished = true
+  }
+
   getEncryptedPrivateKey () {
     return this.encryptedPrivateKey
   }
@@ -74,6 +78,10 @@ export default class BackgroundStore {
 
   getEndPoint () {
     return this.endPoint
+  }
+
+  setPassword (password) {
+    this.password = password
   }
 
   getPassword () {
