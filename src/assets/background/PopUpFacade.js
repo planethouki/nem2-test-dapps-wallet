@@ -37,7 +37,7 @@ export default class PopUpFacade {
     })
   }
 
-  isBackgroundSetUpFinished () {
+  getIsBackgroundSetUpFinished () {
     return this.store.isSetUpFinished()
   }
 
@@ -65,7 +65,11 @@ export default class PopUpFacade {
     this.updateNetworkProperties()
   }
 
-  getPassword () {
-    return this.store.getPassword()
+  getHasPassword () {
+    return this.store.hasPassword()
+  }
+
+  setPassword (password) {
+    this.store.setPassword(password)
   }
 }

@@ -3,7 +3,12 @@
     <hello-world />
     <template v-if="isBackgroundReady">
       <template v-if="isBackgroundSetUpFinished">
-        <dashboard :nem2="nem2" />
+        <template v-if="hasPassword">
+          <dashboard :nem2="nem2" />
+        </template>
+        <template v-else>
+<!--          パスワードを入力してください-->
+        </template>
       </template>
       <template v-else>
         <set-up @saved="setUpSaved" />
@@ -28,6 +33,7 @@ export default {
     return {
       isBackgroundSetUpFinished: false,
       isBackgroundReady: false,
+      hasPassword: false,
       nem2: null
     }
   },
@@ -36,7 +42,8 @@ export default {
       this.nem2 = nem2
       nem2.listenBackgroundIsReady((isReady) => {
         this.isBackgroundReady = isReady
-        this.isBackgroundSetUpFinished = nem2.isBackgroundSetUpFinished()
+        this.isBackgroundSetUpFinished = nem2.getIsBackgroundSetUpFinished()
+        this.hasPassword = nem2.getHasPassword()
       })
     })
   },

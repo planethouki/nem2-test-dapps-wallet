@@ -85,7 +85,27 @@ export default class BackgroundStore {
     this.setUpFinished = true
   }
 
+  /**
+   * 署名時にパスワードを取得する
+   * @return {string}
+   */
   getPassword () {
     return this.passwordMemory
+  }
+
+  /**
+   * 起動時にパスワードが入力されているかどうか
+   * @return {boolean}
+   */
+  hasPassword () {
+    return !!this.passwordMemory
+  }
+
+  /**
+   * 起動時のパスワード入力
+   * @param {string} password
+   */
+  setPassword (password) {
+    this.passwordMemory = password
   }
 }
