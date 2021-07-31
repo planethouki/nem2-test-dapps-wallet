@@ -7,7 +7,7 @@
           <dashboard :nem2="nem2" />
         </template>
         <template v-else>
-<!--          パスワードを入力してください-->
+          <login :nem2="nem2" @login-completed="loginCompleted" />
         </template>
       </template>
       <template v-else>
@@ -25,10 +25,11 @@
 import HelloWorld from '@/components/HelloWorld.vue'
 import Dashboard from '@/components/Dashboard.vue'
 import SetUp from '@/components/SetUp.vue'
+import Login from '@/components/Login.vue'
 
 export default {
   name: 'App',
-  components: { HelloWorld, Dashboard, SetUp },
+  components: { HelloWorld, Dashboard, SetUp, Login },
   data () {
     return {
       isBackgroundSetUpFinished: false,
@@ -51,6 +52,9 @@ export default {
     setUpSaved (setUpSaveRequest) {
       console.log('App.vue setUpSaved')
       this.nem2.setUp(setUpSaveRequest)
+    },
+    loginCompleted () {
+      this.hasPassword = this.nem2.getHasPassword()
     }
   }
 }
