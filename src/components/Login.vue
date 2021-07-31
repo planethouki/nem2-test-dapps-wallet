@@ -31,6 +31,7 @@ export default {
   methods: {
     save () {
       this.nem2.setPassword(this.inputPassword)
+      this.inputPassword = ''
       this.$emit('login-completed')
     }
   }
