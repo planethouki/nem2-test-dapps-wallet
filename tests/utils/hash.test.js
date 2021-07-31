@@ -26,4 +26,10 @@ describe('hash', () => {
     expect(publicKeyToHexAddress(publicKey, 152)).toBe(rawAddressTest)
     expect(publicKeyToHexAddress(publicKey, 104)).toBe(rawAddressMain)
   })
+
+  test('hashPassword', () => {
+    const h = hash.hashPassword('hoge')
+    expect(h.length).toBe(64)
+    expect(h).toMatch(/[A-F\d]+/)
+  })
 })

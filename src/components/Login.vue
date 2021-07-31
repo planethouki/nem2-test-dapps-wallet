@@ -7,6 +7,9 @@
         class="form-control"
         id="inputPassword"
         v-model="inputPassword">
+      <div class="invalid-feedback" :style="{ display: invalidPasswordDisplayStyle }">
+        Invalid Password
+      </div>
     </div>
     <button type="button" class="btn btn-primary" @click="save">Login</button>
   </div>
@@ -14,6 +17,7 @@
 </template>
 
 <script>
+import hash from '@/assets/utils/hash'
 
 export default {
   name: 'Login',
@@ -25,11 +29,23 @@ export default {
   },
   data () {
     return {
-      inputPassword: ''
+      inputPassword: '',
+      invalidPasswordDisplayStyle: 'none'
+    }
+  },
+  watch: {
+    inputPassword () {
+      this.invalidPasswordDisplayStyle = 'none'
     }
   },
   methods: {
     save () {
+      const passwordHash = hash.hashPassword(this.inputPassword)
+      const equals = this.nem2.equalsPasswordHash(passwordHash)
+      if (equals === false) {
+        this.invalidPasswordDisplayStyle = 'block'
+        return
+      }
       this.nem2.setPassword(this.inputPassword)
       this.inputPassword = ''
       this.$emit('login-completed')

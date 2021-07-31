@@ -2,6 +2,7 @@ const SETUP_FINISHED = 'SETUP_FINISHED'
 const END_POINT = 'END_POINT'
 const PUBLIC_KEY = 'PUBLIC_KEY'
 const ENCRYPTED_PRIVATE_KEY = 'ENCRYPTED_PRIVATE_KEY'
+const PASSWORD_HASH = 'PASSWORD_HASH'
 
 export default class BackgroundStore {
   localStorage
@@ -13,6 +14,7 @@ export default class BackgroundStore {
   address
   passwordMemory
   encryptedPrivateKey
+  passwordHash
 
   constructor (localStorage) {
     this.localStorage = localStorage
@@ -25,6 +27,7 @@ export default class BackgroundStore {
     this.endPoint = localStorage.getItem(END_POINT)
     this.publicKey = localStorage.getItem(PUBLIC_KEY)
     this.encryptedPrivateKey = localStorage.getItem(ENCRYPTED_PRIVATE_KEY)
+    this.passwordHash = localStorage.getItem(PASSWORD_HASH)
   }
 
   isSetUpFinished () {
@@ -72,7 +75,7 @@ export default class BackgroundStore {
     this.endPoint = endPoint
   }
 
-  setUp (encryptedPrivateKey, endPoint, password, publicKey) {
+  setUp (encryptedPrivateKey, endPoint, password, publicKey, passwordHash) {
     this.localStorage.setItem(ENCRYPTED_PRIVATE_KEY, encryptedPrivateKey)
     this.encryptedPrivateKey = encryptedPrivateKey
     this.localStorage.setItem(END_POINT, endPoint)
@@ -83,6 +86,8 @@ export default class BackgroundStore {
     this.publicKey = publicKey
     localStorage.setItem(SETUP_FINISHED, 'TRUE')
     this.setUpFinished = true
+    localStorage.setItem(PASSWORD_HASH, passwordHash)
+    this.passwordHash = passwordHash
   }
 
   /**
@@ -107,5 +112,15 @@ export default class BackgroundStore {
    */
   setPassword (password) {
     this.passwordMemory = password
+  }
+
+  /**
+   * パスワードハッシュの比較
+   * ログイン時にパスワードの正誤に使用
+   * @param {string} passwordHash
+   * @return {boolean}
+   */
+  equalsPasswordHash (passwordHash) {
+    return this.passwordHash === passwordHash
   }
 }

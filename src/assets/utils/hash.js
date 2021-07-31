@@ -34,7 +34,17 @@ function publicKeyToHexAddress (publicKey, prefix = 152) {
   return c.toUpperCase()
 }
 
+/**
+ *
+ * @param {string} password
+ * @return {string}
+ */
+function hashPassword (password) {
+  return sha3(password).toUpperCase()
+}
+
 module.exports = {
   getTransactionHash,
-  publicKeyToHexAddress
+  publicKeyToHexAddress,
+  hashPassword
 }

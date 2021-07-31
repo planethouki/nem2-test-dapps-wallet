@@ -60,7 +60,8 @@ export default class PopUpFacade {
       setUpSaveRequest.encryptedPrivateKey,
       setUpSaveRequest.inputEndPoint,
       setUpSaveRequest.inputPassword,
-      setUpSaveRequest.publicKey
+      setUpSaveRequest.publicKey,
+      setUpSaveRequest.passwordHash
     )
     this.updateNetworkProperties()
   }
@@ -71,5 +72,9 @@ export default class PopUpFacade {
 
   setPassword (password) {
     this.store.setPassword(password)
+  }
+
+  equalsPasswordHash (passwordHash) {
+    return this.store.equalsPasswordHash(passwordHash)
   }
 }
