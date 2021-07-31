@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="mb-3">
-      <label for="inputNode" class="form-label">Node</label>
+      <label for="inputPassword" class="form-label">Password</label>
       <input
         type="password"
         class="form-control"
-        id="inputNode"
+        id="inputPassword"
         v-model="inputPassword">
     </div>
     <button type="button" class="btn btn-primary" @click="save">Login</button>
