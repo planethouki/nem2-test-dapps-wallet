@@ -28,9 +28,11 @@ export default {
   },
   data () {
     return {
-      inputPrivateKey: '',
       inputNode: ''
     }
+  },
+  created () {
+    this.inputNode = this.nem2.getEndPoint()
   },
   methods: {
     save () {

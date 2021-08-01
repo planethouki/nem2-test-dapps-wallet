@@ -77,4 +77,8 @@ export default class PopUpFacade {
   equalsPasswordHash (passwordHash) {
     return this.store.equalsPasswordHash(passwordHash)
   }
+
+  getEndPoint () {
+    return this.store.getEndPoint()
+  }
 }
