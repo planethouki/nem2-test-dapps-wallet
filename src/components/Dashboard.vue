@@ -1,7 +1,7 @@
 <template>
   <div>
     <template v-if="isInSettings">
-      <settings :nem2="nem2" @saved="saved" @back="isInSettings = false" />
+      <settings :nem2="nem2" @save="saveSetting" @back="isInSettings = false" />
     </template>
     <template v-else-if="existsConfirmRequest">
       <div>
@@ -76,7 +76,8 @@ export default {
     cancel () {
       this.signConfirmManager.firstCancel()
     },
-    saved () {
+    saveSetting (request) {
+      this.nem2.setSettings(request)
       this.isInSettings = false
     }
   }

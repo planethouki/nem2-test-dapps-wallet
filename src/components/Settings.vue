@@ -36,8 +36,8 @@ export default {
   },
   methods: {
     save () {
-      this.nem2.setSettings(new SettingsSaveRequest(uuid(), this.inputNode))
-      this.$emit('saved')
+      const request = new SettingsSaveRequest(uuid(), this.inputNode)
+      this.$emit('save', request)
     },
     back () {
       this.$emit('back')
