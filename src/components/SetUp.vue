@@ -1,5 +1,5 @@
 <template>
-  <form @submit="save" ref="form">
+  <form @submit="save" ref="form" class="mb-3">
     <p>{{ accountSetUpMessage }}</p>
     <div class="mb-3">
       <label for="inputPrivateKey" class="form-label">Private Key</label>
