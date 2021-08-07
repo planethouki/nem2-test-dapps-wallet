@@ -18,4 +18,8 @@ export default class BackgroundSignConfirm {
     this.popupWindowProxy.close()
     this.resolve(false)
   }
+
+  throw (err) {
+    this.reject(err)
+  }
 }

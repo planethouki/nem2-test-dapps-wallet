@@ -1,3 +1,5 @@
+import PropertiesChangedError from '../Errors/PropertiesChangedError'
+
 const { BehaviorSubject } = require('rxjs')
 
 export default class BackgroundSignConfirms {
@@ -39,5 +41,13 @@ export default class BackgroundSignConfirms {
 
   addSignConfirmListener (callback) {
     this.signReqSubject.subscribe(callback)
+  }
+
+  clear () {
+    this.signReqConfirms.forEach(confirm => {
+      confirm.throw(new PropertiesChangedError())
+    })
+    this.signReqConfirms = []
+    this.signReqSubject.next(0)
   }
 }
