@@ -1,13 +1,7 @@
 <template>
   <div>
     <template v-if="isShowResetConfirm">
-      <button type="button" class="btn btn-danger" @click="resetAccount">
-        Reset Account
-      </button>
-      <span class="d-inline-block me-3"></span>
-      <button type="button" class="btn btn-secondary" @click="isShowResetConfirm = false">
-        Back
-      </button>
+      <factory-set :nem2="nem2" @back="isShowResetConfirm = false" />
     </template>
     <template v-else>
       <div class="mb-3">
@@ -37,9 +31,11 @@
 
 <script>
 import hash from '@/assets/utils/hash'
+import FactorySet from '@/components/FactorySet.vue'
 
 export default {
   name: 'Login',
+  components: { FactorySet },
   props: {
     nem2: {
       type: Object,
@@ -71,9 +67,6 @@ export default {
     },
     confirmResetAccount () {
       this.isShowResetConfirm = true
-    },
-    resetAccount () {
-      this.nem2.factorySet()
     }
   }
 }
