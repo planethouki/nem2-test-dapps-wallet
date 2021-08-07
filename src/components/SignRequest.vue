@@ -22,7 +22,7 @@
 import LabeledItem from '@/components/LabeledItem'
 
 export default {
-  name: 'Dashboard',
+  name: 'SignRequest',
   components: { LabeledItem },
   props: {
     nem2: {
@@ -41,13 +41,12 @@ export default {
   created () {
     this.signConfirmManager = this.nem2.signConfirmManager
     this.accountInfo = this.nem2.getAccountInfo()
-    const handler = () => {
-      const has = this.signConfirmManager.hasSignConfirm()
+    const handler = (signRequestCount) => {
+      const has = signRequestCount > 0
       this.existsConfirmRequest = has
       if (!has) return
       this.signConfirmMessage = this.signConfirmManager.firstMessage()
     }
-    handler()
     this.signConfirmManager.addListener(handler)
   },
   methods: {

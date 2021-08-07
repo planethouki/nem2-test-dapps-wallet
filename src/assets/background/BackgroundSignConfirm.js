@@ -1,4 +1,4 @@
-module.exports = class BackgroundSignConfirm {
+export default class BackgroundSignConfirm {
   resolve
   reject
   popupWindowProxy

@@ -17,9 +17,6 @@
     <template v-else-if="isReady">
       <dashboard :nem2="nem2" />
     </template>
-    <template v-else-if="isSignRequest">
-      <sign-request :nem2="nem2" />
-    </template>
   </div>
 </template>
 
@@ -28,12 +25,11 @@ import HelloWorld from '@/components/HelloWorld.vue'
 import Dashboard from '@/components/Dashboard.vue'
 import SetUp from '@/components/SetUp.vue'
 import Login from '@/components/Login.vue'
-import SignRequest from '@/components/SignRequest.vue'
 import BackgroundStateType from '../assets/models/BackgroundStateType'
 
 export default {
   name: 'App',
-  components: { HelloWorld, Dashboard, SetUp, Login, SignRequest },
+  components: { HelloWorld, Dashboard, SetUp, Login },
   data () {
     return {
       isLoading: false,
@@ -41,7 +37,6 @@ export default {
       isLoadError: false,
       isWaitPassword: false,
       isReady: false,
-      isSignRequest: false,
       nem2: null
     }
   },
@@ -54,7 +49,6 @@ export default {
         this.isLoadError = stateInfo.type === BackgroundStateType.BACKGROUND_LOAD_ERROR
         this.isWaitPassword = stateInfo.type === BackgroundStateType.BACKGROUND_WAIT_PASSWORD
         this.isReady = stateInfo.type === BackgroundStateType.BACKGROUND_READY
-        this.isSignRequest = stateInfo.type === BackgroundStateType.BACKGROUND_SIGN_REQUEST
       })
     })
   },

@@ -14,11 +14,8 @@ export default class PopUpFacade {
     this.backgroundStateSubject = backgroundStateSubject
     this.updateNetworkProperties = updateNetworkProperties
     this.signConfirmManager = {
-      hasSignConfirm () {
-        return confirms.hasSignConfirm()
-      },
       firstMessage () {
-        return 'hoge'
+        return 'todo'
       },
       addListener (callback) {
         confirms.addSignConfirmListener(callback)

@@ -20,10 +20,9 @@ const setBadgeText = (text) => {
   browser.browserAction.setBadgeText({ text })
 }
 
+const backgroundStateSubject = new BehaviorSubject(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_LOADING))
 const store = new BackgroundStore(window.localStorage)
 const confirms = new BackgroundSignConfirms(setBadgeText)
-
-const backgroundStateSubject = new BehaviorSubject(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_LOADING))
 
 const updateNetworkProperties = () => {
   console.log('background: update network properties')
@@ -52,12 +51,10 @@ function signatureRequestHandler (signatureRequest) {
   console.log('background: receive SIGNATURE_REQUEST')
   return browser.browserAction.getPopup({}).then((url) => {
     const popupWindowProxy = window.open(url, '', popupWindowFeatures)
-    backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_SIGN_REQUEST))
     return new Promise((resolve, reject) => {
       confirms.pushSignConfirm(new BackgroundSignConfirm(resolve, reject, popupWindowProxy))
     })
   }).then((isOk) => {
-    backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_READY))
     if (!isOk) {
       console.log('background: send SIGNATURE_DENIED_RESPONSE')
       return new SignatureDeniedResponse(signatureRequest.id)

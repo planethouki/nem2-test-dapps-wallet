@@ -1,12 +1,12 @@
-const { Subject } = require('rxjs')
+const { BehaviorSubject } = require('rxjs')
 
-module.exports = class BackgroundSignConfirms {
+export default class BackgroundSignConfirms {
   signReqConfirms = []
   signReqSubject
 
   constructor (setBadgeText) {
-    this.signReqSubject = new Subject()
-    this.signReqSubject.subscribe(() => {
+    this.signReqSubject = new BehaviorSubject(0)
+    this.signReqSubject.subscribe((length) => {
       setBadgeText(this.getBadgeCountText())
     })
   }
@@ -23,10 +23,6 @@ module.exports = class BackgroundSignConfirms {
   pushSignConfirm (confirm) {
     this.signReqConfirms.push(confirm)
     this.signReqSubject.next(this.signReqConfirms.length)
-  }
-
-  hasSignConfirm () {
-    return this.signReqConfirms.length > 0
   }
 
   firstOk () {
