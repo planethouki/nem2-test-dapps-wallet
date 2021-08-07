@@ -4,5 +4,8 @@
   },
   "factorySetConfirmationMessage": {
     "message": "Do you really want to reset your account? All stored data will be deleted."
+  },
+  "accountSetUpMessage": {
+    "message": "Account SetUp"
   }
 }

@@ -1,5 +1,6 @@
 <template>
   <form @submit="save" ref="form">
+    <p>{{ accountSetUpMessage }}</p>
     <div class="mb-3">
       <label for="inputPrivateKey" class="form-label">Private Key</label>
       <input
@@ -58,6 +59,11 @@ export default {
       inputPassword: 'password'
     }
   },
+  computed: {
+    accountSetUpMessage () {
+      return browser.i18n.getMessage('accountSetUpMessage')
+    }
+  },
   methods: {
     save (e) {
       e.preventDefault()
@@ -72,7 +78,7 @@ export default {
       this.inputPrivateKey = ''
       this.inputNode = ''
       this.inputPassword = ''
-      this.$emit('saved', req)
+      this.$emit('click-save', req)
     }
   }
 }
