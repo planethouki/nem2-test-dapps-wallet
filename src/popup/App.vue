@@ -6,7 +6,7 @@
       <span>Loading...</span>
     </template>
     <template v-else-if="isBeforeSetUp">
-      <set-up @saved="setUpSaved" />
+      <set-up @click-save="saveSetUp" />
     </template>
     <template v-else-if="isLoadError">
       <load-error hideClose="true" @save="saveNode"  />
@@ -55,7 +55,7 @@ export default {
     })
   },
   methods: {
-    setUpSaved (setUpSaveRequest) {
+    saveSetUp (setUpSaveRequest) {
       console.log('App.vue setUpSaved')
       this.nem2.setUp(setUpSaveRequest)
     },
