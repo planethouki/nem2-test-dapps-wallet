@@ -3,7 +3,7 @@
     <template v-if="isInSettings">
       <settings :nem2="nem2" @save="saveSetting" @back="isInSettings = false" />
     </template>
-    <template v-if="existsSignRequest">
+    <template v-else-if="existsSignRequest">
       <sign-request :nem2="nem2" />
     </template>
     <template v-else>
