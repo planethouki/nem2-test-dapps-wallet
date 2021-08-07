@@ -29,8 +29,9 @@ contentScriptStream.on('data', (data) => {
 /**
  *
  * @param {string} payload
+ * @param {string} message
  */
-function sign (payload) {
+function sign (payload, message = '') {
   const id = uuid()
   return new Promise((resolve, reject) => {
     const subscription = modelSubject
@@ -62,7 +63,7 @@ function sign (payload) {
           reject(err)
         }
       })
-    contentScriptStream.write(new SignatureRequest(id, payload))
+    contentScriptStream.write(new SignatureRequest(id, payload, message))
   })
 }
 

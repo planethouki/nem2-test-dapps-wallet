@@ -27,6 +27,10 @@ export default class BackgroundSignConfirms {
     this.signReqSubject.next(this.signReqConfirms.length)
   }
 
+  getFirstMessage () {
+    return this.signReqConfirms[0].message
+  }
+
   firstOk () {
     this.signReqConfirms[0].ok()
     this.signReqConfirms.shift()

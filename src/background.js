@@ -56,7 +56,7 @@ function signatureRequestHandler (signatureRequest) {
   return browser.browserAction.getPopup({}).then((url) => {
     const popupWindowProxy = window.open(url, '', popupWindowFeatures)
     return new Promise((resolve, reject) => {
-      confirms.pushSignConfirm(new BackgroundSignConfirm(resolve, reject, popupWindowProxy))
+      confirms.pushSignConfirm(new BackgroundSignConfirm(resolve, reject, popupWindowProxy, signatureRequest.message))
     })
   }).then((isOk) => {
     if (!isOk) {

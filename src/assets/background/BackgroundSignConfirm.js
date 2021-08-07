@@ -3,10 +3,11 @@ export default class BackgroundSignConfirm {
   reject
   popupWindowProxy
 
-  constructor (resolve, reject, popupWindowProxy) {
+  constructor (resolve, reject, popupWindowProxy, message) {
     this.resolve = resolve
     this.reject = reject
     this.popupWindowProxy = popupWindowProxy
+    this.message = message
   }
 
   ok () {

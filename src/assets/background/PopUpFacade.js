@@ -15,7 +15,7 @@ export default class PopUpFacade {
     this.updateNetworkProperties = updateNetworkProperties
     this.signConfirmManager = {
       firstMessage () {
-        return 'todo'
+        return confirms.getFirstMessage()
       },
       addListener (callback) {
         confirms.addSignConfirmListener(callback)

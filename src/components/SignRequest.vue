@@ -46,6 +46,9 @@ export default {
       this.existsConfirmRequest = has
       if (!has) return
       this.signConfirmMessage = this.signConfirmManager.firstMessage()
+      if (!!this.signConfirmMessage === false) {
+        this.signConfirmMessage = 'no message'
+      }
     }
     this.signConfirmManager.addListener(handler)
   },
