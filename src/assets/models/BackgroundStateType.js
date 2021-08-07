@@ -1,0 +1,7 @@
+module.exports = {
+  LOADING: 0x3F01,
+  BEFORE_SETUP: 0x3F03,
+  LOAD_ERROR: 0x3F05,
+  WAIT_PASSWORD: 0x3F07,
+  READY: 0x3F09
+}

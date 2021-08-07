@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Symbol dApps Wallet Alpha",
+    "description": "この拡張機能の名前"
+  },
+  "factorySetConfirmationMessage": {
+    "message": "本当にアカウントをリセットしますか？すべての保存されたデータが削除されます。",
+    "description": "アカウント削除するときの確認メッセージ"
+  },
+  "accountSetUpMessage": {
+    "message": "初期セットアップ",
+    "description": "初回起動時のタイトル"
+  }
+}
