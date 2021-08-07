@@ -43,9 +43,13 @@ export default class PopUpFacade {
       this.store.getEndPoint())
   }
 
-  setSettings (settingsSaveRequest) {
-    this.store.setSettings(settingsSaveRequest.inputEndPoint)
+  setEndPoint (endPoint) {
+    this.store.setEndPoint(endPoint)
+    this.updateNetworkProperties()
+  }
 
+  setSettings (settingsSaveRequest) {
+    this.store.setEndPoint(settingsSaveRequest.inputEndPoint)
     this.updateNetworkProperties()
   }
 

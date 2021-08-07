@@ -70,7 +70,7 @@ export default class BackgroundStore {
     return this.endPoint
   }
 
-  setSettings (endPoint) {
+  setEndPoint (endPoint) {
     this.localStorage.setItem(END_POINT, endPoint)
     this.endPoint = endPoint
   }

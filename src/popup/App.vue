@@ -9,7 +9,7 @@
       <set-up @saved="setUpSaved" />
     </template>
     <template v-else-if="isLoadError">
-
+      <load-error hideClose="true" @save="saveNode"  />
     </template>
     <template v-else-if="isWaitPassword">
       <login :nem2="nem2" @login-completed="loginCompleted" />
@@ -25,11 +25,12 @@ import HelloWorld from '@/components/HelloWorld.vue'
 import Dashboard from '@/components/Dashboard.vue'
 import SetUp from '@/components/SetUp.vue'
 import Login from '@/components/Login.vue'
+import LoadError from '@/components/LoadError.vue'
 import BackgroundStateType from '../assets/models/BackgroundStateType'
 
 export default {
   name: 'App',
-  components: { HelloWorld, Dashboard, SetUp, Login },
+  components: { HelloWorld, Dashboard, SetUp, Login, LoadError },
   data () {
     return {
       isLoading: false,
@@ -45,6 +46,7 @@ export default {
       this.nem2 = nem2
       nem2.listenBackgroundState((stateInfo) => {
         console.log('App.vue', stateInfo.type)
+        this.isLoading = stateInfo.type === BackgroundStateType.BACKGROUND_LOADING
         this.isBeforeSetUp = stateInfo.type === BackgroundStateType.BACKGROUND_BEFORE_SETUP
         this.isLoadError = stateInfo.type === BackgroundStateType.BACKGROUND_LOAD_ERROR
         this.isWaitPassword = stateInfo.type === BackgroundStateType.BACKGROUND_WAIT_PASSWORD
@@ -59,6 +61,9 @@ export default {
     },
     loginCompleted (inputPassword) {
       this.nem2.setPassword(inputPassword)
+    },
+    saveNode (inputNode) {
+      this.nem2.setEndPoint(inputNode)
     }
   }
 }

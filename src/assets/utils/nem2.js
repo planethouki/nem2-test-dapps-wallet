@@ -25,7 +25,8 @@ async function getProperties (endPoint) {
   return axios.request({
     method: 'GET',
     baseURL: endPoint,
-    url: '/node/info'
+    url: '/node/info',
+    timeout: 5000
   }).then((res) => {
     const {
       networkGenerationHashSeed,

@@ -44,6 +44,9 @@ const updateNetworkProperties = () => {
         backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_WAIT_PASSWORD))
       }
     })
+    .catch((e) => {
+      backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_LOAD_ERROR))
+    })
 }
 
 updateNetworkProperties()
