@@ -20,7 +20,7 @@
       <div class="mb-3"></div>
       <div class="mb-3">
         <p>forgot password ?</p>
-        <button type="button" class="btn btn-sm btn-outline-secondary" @click="confirmResetAccount">
+        <button type="button" class="btn btn-sm btn-outline-secondary" @click="isShowResetConfirm = true">
           Reset Account
         </button>
       </div>
@@ -64,9 +64,6 @@ export default {
       }
       this.$emit('login-completed', this.inputPassword)
       this.inputPassword = ''
-    },
-    confirmResetAccount () {
-      this.isShowResetConfirm = true
     }
   }
 }
