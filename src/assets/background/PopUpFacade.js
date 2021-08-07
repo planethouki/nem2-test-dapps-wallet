@@ -35,10 +35,6 @@ export default class PopUpFacade {
     })
   }
 
-  getIsBackgroundSetUpFinished () {
-    return this.store.isSetUpFinished()
-  }
-
   getAccountInfo () {
     return new AccountInfoDisplayRequest(
       uuid(),
@@ -62,10 +58,6 @@ export default class PopUpFacade {
       setUpSaveRequest.passwordHash
     )
     this.updateNetworkProperties()
-  }
-
-  getHasPassword () {
-    return this.store.hasPassword()
   }
 
   setPassword (password) {
