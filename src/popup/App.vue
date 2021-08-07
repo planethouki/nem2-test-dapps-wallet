@@ -9,7 +9,7 @@
       <set-up @click-save="saveSetUp" />
     </template>
     <template v-else-if="isLoadError">
-      <load-error hideClose="true" @save="saveNode"  />
+      <load-error hideClose="true" @save="saveNode" />
     </template>
     <template v-else-if="isWaitPassword">
       <login :nem2="nem2" @login-completed="loginCompleted" />
