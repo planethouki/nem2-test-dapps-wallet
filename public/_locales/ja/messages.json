@@ -1,6 +1,10 @@
 {
   "extName": {
     "message": "Symbol dApps Wallet Alpha",
-    "description": "テストネット用のSymbolウォレット拡張機能"
+    "description": "この拡張機能の名前"
+  },
+  "factorySetConfirmationMessage": {
+    "message": "本当にアカウントをリセットしますか？すべての保存されたデータが削除されます。",
+    "description": "アカウント削除するときの確認メッセージ"
   }
 }

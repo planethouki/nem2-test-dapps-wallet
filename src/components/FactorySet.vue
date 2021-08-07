@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>Do you really want to reset your account? All stored data will be deleted.</p>
+    <p>{{ titleMessage }}</p>
     <button type="button" class="btn btn-danger" @click="resetAccount">
       Submit
     </button>
@@ -18,6 +18,11 @@ export default {
     nem2: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    titleMessage () {
+      return browser.i18n.getMessage('factorySetConfirmationMessage')
     }
   },
   methods: {
