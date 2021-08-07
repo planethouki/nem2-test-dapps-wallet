@@ -20,7 +20,7 @@ const setBadgeText = (text) => {
   browser.browserAction.setBadgeText({ text })
 }
 
-const backgroundStateSubject = new BehaviorSubject(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_LOADING))
+const backgroundStateSubject = new BehaviorSubject(new BackgroundStateInfo(BackgroundStateType.LOADING))
 const store = new BackgroundStore(window.localStorage)
 const confirms = new BackgroundSignConfirms(setBadgeText)
 
@@ -28,10 +28,10 @@ const updateNetworkProperties = () => {
   console.log('background: update network properties')
   confirms.clear()
   if (!store.isSetUpFinished()) {
-    backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_BEFORE_SETUP))
+    backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BEFORE_SETUP))
     return Promise.resolve()
   }
-  backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_LOADING))
+  backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.LOADING))
   return nem2.getProperties(store.getEndPoint())
     .then(({ generationHash, networkType }) => {
       console.log('background: get network properties', generationHash, networkType)
@@ -39,13 +39,13 @@ const updateNetworkProperties = () => {
       const plainAddress = base32.getBase32EncodeAddress(hexAddress)
       store.setNetworkProperties(generationHash, networkType, plainAddress)
       if (store.hasPassword()) {
-        backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_READY))
+        backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.READY))
       } else {
-        backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_WAIT_PASSWORD))
+        backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.WAIT_PASSWORD))
       }
     })
     .catch((e) => {
-      backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_LOAD_ERROR))
+      backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.LOAD_ERROR))
     })
 }
 

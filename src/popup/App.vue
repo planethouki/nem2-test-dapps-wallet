@@ -46,11 +46,11 @@ export default {
       this.nem2 = nem2
       nem2.listenBackgroundState((stateInfo) => {
         console.log('App.vue', stateInfo.type)
-        this.isLoading = stateInfo.type === BackgroundStateType.BACKGROUND_LOADING
-        this.isBeforeSetUp = stateInfo.type === BackgroundStateType.BACKGROUND_BEFORE_SETUP
-        this.isLoadError = stateInfo.type === BackgroundStateType.BACKGROUND_LOAD_ERROR
-        this.isWaitPassword = stateInfo.type === BackgroundStateType.BACKGROUND_WAIT_PASSWORD
-        this.isReady = stateInfo.type === BackgroundStateType.BACKGROUND_READY
+        this.isLoading = stateInfo.type === BackgroundStateType.LOADING
+        this.isBeforeSetUp = stateInfo.type === BackgroundStateType.BEFORE_SETUP
+        this.isLoadError = stateInfo.type === BackgroundStateType.LOAD_ERROR
+        this.isWaitPassword = stateInfo.type === BackgroundStateType.WAIT_PASSWORD
+        this.isReady = stateInfo.type === BackgroundStateType.READY
       })
     })
   },

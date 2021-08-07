@@ -66,7 +66,7 @@ export default class PopUpFacade {
 
   setPassword (password) {
     this.store.setPassword(password)
-    this.backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_READY))
+    this.backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.READY))
   }
 
   equalsPasswordHash (passwordHash) {
