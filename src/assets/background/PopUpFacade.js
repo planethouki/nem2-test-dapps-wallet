@@ -76,4 +76,9 @@ export default class PopUpFacade {
   getEndPoint () {
     return this.store.getEndPoint()
   }
+
+  factorySet () {
+    this.store.factorySet()
+    this.updateNetworkProperties()
+  }
 }

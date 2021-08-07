@@ -90,6 +90,25 @@ export default class BackgroundStore {
     this.passwordHash = passwordHash
   }
 
+  factorySet () {
+    this.localStorage.removeItem(ENCRYPTED_PRIVATE_KEY)
+    this.encryptedPrivateKey = null
+    this.localStorage.removeItem(END_POINT)
+    this.endPoint = null
+
+    this.passwordMemory = null
+    this.localStorage.removeItem(PUBLIC_KEY)
+    this.publicKey = null
+    localStorage.removeItem(SETUP_FINISHED)
+    this.setUpFinished = false
+    localStorage.removeItem(PASSWORD_HASH)
+    this.passwordHash = null
+
+    this.generationHashMemory = null
+    this.networkTypeMemory = null
+    this.address = null
+  }
+
   /**
    * 署名時にパスワードを取得する
    * @return {string}
