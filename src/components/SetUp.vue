@@ -1,5 +1,5 @@
 <template>
-  <form @submit="save" ref="form" class="mb-3">
+  <form @submit="save" ref="form">
     <p>{{ accountSetUpMessage }}</p>
     <div class="mb-3">
       <label for="inputPrivateKey" class="form-label">Private Key</label>
@@ -39,7 +39,9 @@
         v-model="inputPassword" />
       <div id="passwordHelp" class="form-text">min 8 characters</div>
     </div>
-    <button type="submit" class="btn btn-primary">Save</button>
+    <div class="mb-3">
+      <button type="submit" class="btn btn-primary">Save</button>
+    </div>
   </form>
 </template>
 
