@@ -24,16 +24,13 @@ const store = new BackgroundStore(window.localStorage)
 const confirms = new BackgroundSignConfirms(setBadgeText)
 
 const backgroundStateSubject = new BehaviorSubject(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_LOADING))
-const isReadySubject = new BehaviorSubject(false)
 
 const updateNetworkProperties = () => {
   console.log('background: update network properties')
   if (!store.isSetUpFinished()) {
     backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_BEFORE_SETUP))
-    isReadySubject.next(true)
     return Promise.resolve()
   }
-  isReadySubject.next(false)
   backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_LOADING))
   return nem2.getProperties(store.getEndPoint())
     .then(({ generationHash, networkType }) => {
@@ -41,7 +38,6 @@ const updateNetworkProperties = () => {
       const hexAddress = hash.publicKeyToHexAddress(store.getPublicKey(), networkType)
       const plainAddress = base32.getBase32EncodeAddress(hexAddress)
       store.setNetworkProperties(generationHash, networkType, plainAddress)
-      isReadySubject.next(true)
       if (store.hasPassword()) {
         backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_READY))
       } else {
@@ -95,7 +91,6 @@ browser.runtime.onMessage.addListener(function (request, sender) {
 
 window.nem2 = new PopUpFacade(
   store,
-  isReadySubject,
   confirms,
   updateNetworkProperties,
   backgroundStateSubject)

@@ -6,13 +6,11 @@ import BackgroundStateInfo from '../models/BackgroundStateInfo'
 
 export default class PopUpFacade {
   store
-  isReadySubject
   signConfirmManager
   updateNetworkProperties
 
-  constructor (store, isReadySubject, confirms, updateNetworkProperties, backgroundStateSubject) {
+  constructor (store, confirms, updateNetworkProperties, backgroundStateSubject) {
     this.store = store
-    this.isReadySubject = isReadySubject
     this.backgroundStateSubject = backgroundStateSubject
     this.updateNetworkProperties = updateNetworkProperties
     this.signConfirmManager = {
@@ -37,12 +35,6 @@ export default class PopUpFacade {
   listenBackgroundState (callback) {
     this.backgroundStateSubject.subscribe((stateInfo) => {
       callback(stateInfo)
-    })
-  }
-
-  listenBackgroundIsReady (callback) {
-    this.isReadySubject.subscribe((isReady) => {
-      callback(isReady)
     })
   }
 
