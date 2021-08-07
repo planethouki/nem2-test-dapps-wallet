@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>Reset Account</p>
+    <p>Do you really want to reset your account? All stored data will be deleted.</p>
     <button type="button" class="btn btn-danger" @click="resetAccount">
       Submit
     </button>
