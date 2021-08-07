@@ -1,6 +1,8 @@
 import { v4 as uuid } from 'uuid'
 import AccountInfoDisplayRequest from '../models/AccountInfoDisplayRequest'
 import helper from '../utils/helper'
+import BackgroundStateType from '../models/BackgroundStateType'
+import BackgroundStateInfo from '../models/BackgroundStateInfo'
 
 export default class PopUpFacade {
   store
@@ -8,9 +10,10 @@ export default class PopUpFacade {
   signConfirmManager
   updateNetworkProperties
 
-  constructor (store, isReadySubject, confirms, updateNetworkProperties) {
+  constructor (store, isReadySubject, confirms, updateNetworkProperties, backgroundStateSubject) {
     this.store = store
     this.isReadySubject = isReadySubject
+    this.backgroundStateSubject = backgroundStateSubject
     this.updateNetworkProperties = updateNetworkProperties
     this.signConfirmManager = {
       hasSignConfirm () {
@@ -29,6 +32,12 @@ export default class PopUpFacade {
         confirms.firstCancel()
       }
     }
+  }
+
+  listenBackgroundState (callback) {
+    this.backgroundStateSubject.subscribe((stateInfo) => {
+      callback(stateInfo)
+    })
   }
 
   listenBackgroundIsReady (callback) {
@@ -72,6 +81,7 @@ export default class PopUpFacade {
 
   setPassword (password) {
     this.store.setPassword(password)
+    this.backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_READY))
   }
 
   equalsPasswordHash (passwordHash) {

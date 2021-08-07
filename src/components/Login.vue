@@ -46,9 +46,8 @@ export default {
         this.invalidPasswordDisplayStyle = 'block'
         return
       }
-      this.nem2.setPassword(this.inputPassword)
+      this.$emit('login-completed', this.inputPassword)
       this.inputPassword = ''
-      this.$emit('login-completed')
     }
   }
 }

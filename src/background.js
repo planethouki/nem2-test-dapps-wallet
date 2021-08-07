@@ -11,6 +11,8 @@ import BackgroundSignConfirm from './assets/background/BackgroundSignConfirm'
 import SignatureDeniedResponse from './assets/models/SignatureDeniedResponse'
 import BackgroundSignConfirms from './assets/background/BackgroundSignConfirms'
 import PopUpFacade from './assets/background/PopUpFacade'
+import BackgroundStateInfo from './assets/models/BackgroundStateInfo'
+import BackgroundStateType from './assets/models/BackgroundStateType'
 
 const popupWindowFeatures = 'location=no, width=400, height=400'
 
@@ -21,15 +23,18 @@ const setBadgeText = (text) => {
 const store = new BackgroundStore(window.localStorage)
 const confirms = new BackgroundSignConfirms(setBadgeText)
 
+const backgroundStateSubject = new BehaviorSubject(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_LOADING))
 const isReadySubject = new BehaviorSubject(false)
 
 const updateNetworkProperties = () => {
   console.log('background: update network properties')
   if (!store.isSetUpFinished()) {
+    backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_BEFORE_SETUP))
     isReadySubject.next(true)
     return Promise.resolve()
   }
   isReadySubject.next(false)
+  backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_LOADING))
   return nem2.getProperties(store.getEndPoint())
     .then(({ generationHash, networkType }) => {
       console.log('background: get network properties', generationHash, networkType)
@@ -37,6 +42,11 @@ const updateNetworkProperties = () => {
       const plainAddress = base32.getBase32EncodeAddress(hexAddress)
       store.setNetworkProperties(generationHash, networkType, plainAddress)
       isReadySubject.next(true)
+      if (store.hasPassword()) {
+        backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_READY))
+      } else {
+        backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_WAIT_PASSWORD))
+      }
     })
 }
 
@@ -46,10 +56,12 @@ function signatureRequestHandler (signatureRequest) {
   console.log('background: receive SIGNATURE_REQUEST')
   return browser.browserAction.getPopup({}).then((url) => {
     const popupWindowProxy = window.open(url, '', popupWindowFeatures)
+    backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_SIGN_REQUEST))
     return new Promise((resolve, reject) => {
       confirms.pushSignConfirm(new BackgroundSignConfirm(resolve, reject, popupWindowProxy))
     })
   }).then((isOk) => {
+    backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BACKGROUND_READY))
     if (!isOk) {
       console.log('background: send SIGNATURE_DENIED_RESPONSE')
       return new SignatureDeniedResponse(signatureRequest.id)
@@ -81,4 +93,9 @@ browser.runtime.onMessage.addListener(function (request, sender) {
   }
 })
 
-window.nem2 = new PopUpFacade(store, isReadySubject, confirms, updateNetworkProperties)
+window.nem2 = new PopUpFacade(
+  store,
+  isReadySubject,
+  confirms,
+  updateNetworkProperties,
+  backgroundStateSubject)

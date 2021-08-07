@@ -1,23 +1,25 @@
 <template>
   <div class="container mt-3">
     <hello-world />
-    <template v-if="isBackgroundReady">
-      <template v-if="isBackgroundSetUpFinished">
-        <template v-if="hasPassword">
-          <dashboard :nem2="nem2" />
-        </template>
-        <template v-else>
-          <login :nem2="nem2" @login-completed="loginCompleted" />
-        </template>
-      </template>
-      <template v-else>
-        <set-up @saved="setUpSaved" />
-      </template>
-    </template>
-    <div v-else>
+    <template v-if="isLoading">
       <div class="spinner-grow spinner-grow-sm" role="status"></div>
       <span>Loading...</span>
-    </div>
+    </template>
+    <template v-else-if="isBeforeSetUp">
+      <set-up @saved="setUpSaved" />
+    </template>
+    <template v-else-if="isLoadError">
+
+    </template>
+    <template v-else-if="isWaitPassword">
+      <login :nem2="nem2" @login-completed="loginCompleted" />
+    </template>
+    <template v-else-if="isReady">
+      <dashboard :nem2="nem2" />
+    </template>
+    <template v-else-if="isSignRequest">
+      <sign-request :nem2="nem2" />
+    </template>
   </div>
 </template>
 
@@ -26,25 +28,33 @@ import HelloWorld from '@/components/HelloWorld.vue'
 import Dashboard from '@/components/Dashboard.vue'
 import SetUp from '@/components/SetUp.vue'
 import Login from '@/components/Login.vue'
+import SignRequest from '@/components/SignRequest.vue'
+import BackgroundStateType from '../assets/models/BackgroundStateType'
 
 export default {
   name: 'App',
-  components: { HelloWorld, Dashboard, SetUp, Login },
+  components: { HelloWorld, Dashboard, SetUp, Login, SignRequest },
   data () {
     return {
-      isBackgroundSetUpFinished: false,
-      isBackgroundReady: false,
-      hasPassword: false,
+      isLoading: false,
+      isBeforeSetUp: false,
+      isLoadError: false,
+      isWaitPassword: false,
+      isReady: false,
+      isSignRequest: false,
       nem2: null
     }
   },
   created () {
     browser.runtime.getBackgroundPage().then(({ nem2 }) => {
       this.nem2 = nem2
-      nem2.listenBackgroundIsReady((isReady) => {
-        this.isBackgroundReady = isReady
-        this.isBackgroundSetUpFinished = nem2.getIsBackgroundSetUpFinished()
-        this.hasPassword = nem2.getHasPassword()
+      nem2.listenBackgroundState((stateInfo) => {
+        console.log('App.vue', stateInfo.type)
+        this.isBeforeSetUp = stateInfo.type === BackgroundStateType.BACKGROUND_BEFORE_SETUP
+        this.isLoadError = stateInfo.type === BackgroundStateType.BACKGROUND_LOAD_ERROR
+        this.isWaitPassword = stateInfo.type === BackgroundStateType.BACKGROUND_WAIT_PASSWORD
+        this.isReady = stateInfo.type === BackgroundStateType.BACKGROUND_READY
+        this.isSignRequest = stateInfo.type === BackgroundStateType.BACKGROUND_SIGN_REQUEST
       })
     })
   },
@@ -53,8 +63,8 @@ export default {
       console.log('App.vue setUpSaved')
       this.nem2.setUp(setUpSaveRequest)
     },
-    loginCompleted () {
-      this.hasPassword = this.nem2.getHasPassword()
+    loginCompleted (inputPassword) {
+      this.nem2.setPassword(inputPassword)
     }
   }
 }
