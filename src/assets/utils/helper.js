@@ -22,7 +22,12 @@ function hexToUint8Array (hex) {
 }
 
 function getSigningPayload (payload) {
-  return payload.substr((8 + 64 + 32 + 4) * 2)
+  const transactionType = getTransactionType(payload)
+  if (transactionType === 16705 || transactionType === 16961) {
+    return payload.substr((8 + 64 + 32 + 4) * 2, (2 + 2 + 8 + 8 + 32) * 2)
+  } else {
+    return payload.substr((8 + 64 + 32 + 4) * 2)
+  }
 }
 
 function getSizePayload (payload) {
