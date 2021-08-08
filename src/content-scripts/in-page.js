@@ -6,6 +6,7 @@ import { filter } from 'rxjs/operators'
 import { v4 as uuid } from 'uuid'
 import UserDeniedSignatureError from '../assets/errors/UserDeniedSignatureError'
 import UnknownError from '../assets/errors/UnknownError'
+import AccountInfoForInPageRequest from '../assets/models/AccountInfoForInPageRequest'
 
 const modelSubject = new Subject()
 
@@ -19,10 +20,14 @@ contentScriptStream.on('data', (data) => {
 
   if (!data.type) return
 
-  if (data.type === ModelType.SIGNATURE_RESPONSE) {
-    modelSubject.next(data)
-  } else if (data.type === ModelType.SIGNATURE_DENIED_RESPONSE) {
-    modelSubject.next(data)
+  switch (data.type) {
+    case ModelType.SIGNATURE_RESPONSE:
+    case ModelType.SIGNATURE_DENIED_RESPONSE:
+    case ModelType.ACCOUNT_INFO_FOR_IN_PAGE_RESPONSE:
+      modelSubject.next(data)
+      break
+    default:
+      console.log('in-page: receive unknown data type')
   }
 })
 
@@ -67,6 +72,39 @@ function sign (payload, message = '') {
   })
 }
 
+function getAccountInfo () {
+  const id = uuid()
+  return new Promise((resolve, reject) => {
+    const subscription = modelSubject
+      .pipe(
+        filter((data) => !!data.type),
+        filter((data) => data.id === id)
+      )
+      .subscribe({
+        next: (data) => {
+          subscription.unsubscribe()
+          if (data.type === ModelType.ACCOUNT_INFO_FOR_IN_PAGE_RESPONSE) {
+            resolve({
+              addressPlain: data.addressPlain,
+              publicKey: data.publicKey,
+              networkType: data.networkType,
+              generationHash: data.generationHash
+            })
+          } else {
+            const error = new UnknownError()
+            reject(error)
+          }
+        },
+        error: (err) => {
+          subscription.unsubscribe()
+          reject(err)
+        }
+      })
+    contentScriptStream.write(new AccountInfoForInPageRequest(id))
+  })
+}
+
 window.nem2 = {
-  sign
+  sign,
+  getAccountInfo
 }

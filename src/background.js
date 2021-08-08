@@ -13,6 +13,7 @@ import BackgroundSignConfirms from './assets/background/BackgroundSignConfirms'
 import PopUpFacade from './assets/background/PopUpFacade'
 import BackgroundStateInfo from './assets/models/BackgroundStateInfo'
 import BackgroundStateType from './assets/models/BackgroundStateType'
+import AccountInfoForInPageResponse from './assets/models/AccountInfoForInPageResponse'
 
 const popupWindowFeatures = 'location=no, width=400, height=400'
 
@@ -82,11 +83,42 @@ function signatureRequestHandler (signatureRequest) {
   })
 }
 
+function accountInfoRequestHandler (accountInfoRequest) {
+  console.log('background: receive ACCOUNT_INFO_FOR_IN_PAGE_REQUEST')
+
+  return new Promise((resolve, reject) => {
+    backgroundStateSubject.subscribe({
+      next (stateInfo) {
+        if (store.isSetUpFinished() === false) {
+          return
+        }
+        const networkType = store.getNetworkType()
+        const generationHash = store.getGenerationHash()
+        const publicKey = store.getPublicKey()
+        const address = store.getAddress()
+        console.log('background: send ACCOUNT_INFO_FOR_IN_PAGE_RESPONSE')
+        resolve(new AccountInfoForInPageResponse(
+          accountInfoRequest.id,
+          address,
+          publicKey,
+          networkType,
+          generationHash
+        ))
+      },
+      error (err) {
+        reject(err)
+      }
+    })
+  })
+}
+
 browser.runtime.onMessage.addListener(function (request, sender) {
   if (!request.type) return
 
   if (request.type === ModelType.SIGNATURE_REQUEST) {
     return signatureRequestHandler(request)
+  } else if (request.type === ModelType.ACCOUNT_INFO_FOR_IN_PAGE_REQUEST) {
+    return accountInfoRequestHandler(request)
   }
 })
 
