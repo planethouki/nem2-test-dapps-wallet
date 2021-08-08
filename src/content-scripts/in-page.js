@@ -4,8 +4,8 @@ import ModelType from '../assets/models/ModelType'
 import { Subject } from 'rxjs'
 import { filter } from 'rxjs/operators'
 import { v4 as uuid } from 'uuid'
-import UserDeniedSignatureError from '../assets/Errors/UserDeniedSignatureError'
-import UnknownError from '../assets/Errors/UnknownError'
+import UserDeniedSignatureError from '../assets/errors/UserDeniedSignatureError'
+import UnknownError from '../assets/errors/UnknownError'
 
 const modelSubject = new Subject()
 

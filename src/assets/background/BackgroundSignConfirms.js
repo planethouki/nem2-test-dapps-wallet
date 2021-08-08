@@ -1,4 +1,4 @@
-import PropertiesChangedError from '../Errors/PropertiesChangedError'
+import PropertiesChangedError from '../errors/PropertiesChangedError'
 
 const { BehaviorSubject } = require('rxjs')
 
