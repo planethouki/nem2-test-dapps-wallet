@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid'
-import AccountInfoDisplayRequest from '../models/AccountInfoDisplayRequest'
+import AccountInfoForPopUp from '../models/AccountInfoForPopUp'
 import helper from '../utils/helper'
 import BackgroundStateType from '../models/BackgroundStateType'
 import BackgroundStateInfo from '../models/BackgroundStateInfo'
@@ -36,7 +36,7 @@ export default class PopUpFacade {
   }
 
   getAccountInfo () {
-    return new AccountInfoDisplayRequest(
+    return new AccountInfoForPopUp(
       uuid(),
       this.store.getAddress(),
       helper.getNetworkTypeString(this.store.getNetworkType()),
