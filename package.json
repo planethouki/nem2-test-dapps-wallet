@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@metamask/post-message-stream": "^4.0.0",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.2.0",
     "core-js": "^3.6.5",
