@@ -1,4 +1,4 @@
-const { hexToUint8Array, uint8ArrayToHex } = require('./helper')
+const { hexToUint8Array, uint8ArrayToHex, getTransactionType } = require('./helper')
 const { sha3_256: sha3 } = require('js-sha3')
 const Ripemd160 = require('ripemd160')
 
@@ -9,11 +9,21 @@ const Ripemd160 = require('ripemd160')
  * @return {string}
  */
 function getTransactionHash (signedTxPayload, generationHash) {
-  const hashInputPayload =
-        signedTxPayload.substr(8 * 2, 64 * 2) +
-        signedTxPayload.substr((8 + 64) * 2, 32 * 2) +
-        generationHash +
-        signedTxPayload.substr((8 + 64 + 32 + 4) * 2)
+  const transactionType = getTransactionType(signedTxPayload)
+  let hashInputPayload
+  if (transactionType === 16705 || transactionType === 16961) {
+    hashInputPayload =
+      signedTxPayload.substr(8 * 2, 64 * 2) +
+      signedTxPayload.substr((8 + 64) * 2, 32 * 2) +
+      generationHash +
+      signedTxPayload.substr((8 + 64 + 32 + 4) * 2, (2 + 2 + 8 + 8 + 32) * 2)
+  } else {
+    hashInputPayload =
+      signedTxPayload.substr(8 * 2, 64 * 2) +
+      signedTxPayload.substr((8 + 64) * 2, 32 * 2) +
+      generationHash +
+      signedTxPayload.substr((8 + 64 + 32 + 4) * 2)
+  }
   const hashByte = sha3.digest(hexToUint8Array(hashInputPayload))
   const hashed = uint8ArrayToHex(hashByte)
   return hashed.toUpperCase()
