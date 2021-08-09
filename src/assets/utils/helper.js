@@ -40,7 +40,7 @@ function spliceSignature (unsignedPayload, signature, signerPublicKey) {
     signature +
     signerPublicKey +
     ''.padStart(8, '0') +
-    getSigningPayload(unsignedPayload)
+    unsignedPayload.substr((8 + 64 + 32 + 4) * 2)
 }
 
 function getTransactionType (payload) {
