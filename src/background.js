@@ -92,6 +92,11 @@ function accountInfoRequestHandler (accountInfoRequest) {
         if (store.isSetUpFinished() === false) {
           return
         }
+        const isWait = stateInfo.type === BackgroundStateType.WAIT_PASSWORD
+        const isReady = stateInfo.type === BackgroundStateType.READY
+        if ((isWait || isReady) === false) {
+          return
+        }
         const networkType = store.getNetworkType()
         const generationHash = store.getGenerationHash()
         const publicKey = store.getPublicKey()
