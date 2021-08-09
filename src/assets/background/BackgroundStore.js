@@ -5,7 +5,7 @@ const ENCRYPTED_PRIVATE_KEY = 'ENCRYPTED_PRIVATE_KEY'
 const PASSWORD_HASH = 'PASSWORD_HASH'
 
 export default class BackgroundStore {
-  localStorage
+  secureStorage
   setUpFinished = false
   generationHashMemory
   networkTypeMemory
@@ -16,18 +16,18 @@ export default class BackgroundStore {
   encryptedPrivateKey
   passwordHash
 
-  constructor (localStorage) {
-    this.localStorage = localStorage
-    if (localStorage.getItem(SETUP_FINISHED) === null) {
+  constructor (secureStorage) {
+    this.secureStorage = secureStorage
+    if (secureStorage.getItem(SETUP_FINISHED) === null) {
       return
     }
 
     this.setUpFinished = true
 
-    this.endPoint = localStorage.getItem(END_POINT)
-    this.publicKey = localStorage.getItem(PUBLIC_KEY)
-    this.encryptedPrivateKey = localStorage.getItem(ENCRYPTED_PRIVATE_KEY)
-    this.passwordHash = localStorage.getItem(PASSWORD_HASH)
+    this.endPoint = secureStorage.getItem(END_POINT)
+    this.publicKey = secureStorage.getItem(PUBLIC_KEY)
+    this.encryptedPrivateKey = secureStorage.getItem(ENCRYPTED_PRIVATE_KEY)
+    this.passwordHash = secureStorage.getItem(PASSWORD_HASH)
   }
 
   isSetUpFinished () {
@@ -71,37 +71,37 @@ export default class BackgroundStore {
   }
 
   setEndPoint (endPoint) {
-    this.localStorage.setItem(END_POINT, endPoint)
+    this.secureStorage.setItem(END_POINT, endPoint)
     this.endPoint = endPoint
   }
 
   setUp (encryptedPrivateKey, endPoint, password, publicKey, passwordHash) {
-    this.localStorage.setItem(ENCRYPTED_PRIVATE_KEY, encryptedPrivateKey)
+    this.secureStorage.setItem(ENCRYPTED_PRIVATE_KEY, encryptedPrivateKey)
     this.encryptedPrivateKey = encryptedPrivateKey
-    this.localStorage.setItem(END_POINT, endPoint)
+    this.secureStorage.setItem(END_POINT, endPoint)
     this.endPoint = endPoint
 
     this.passwordMemory = password
-    this.localStorage.setItem(PUBLIC_KEY, publicKey)
+    this.secureStorage.setItem(PUBLIC_KEY, publicKey)
     this.publicKey = publicKey
-    localStorage.setItem(SETUP_FINISHED, 'TRUE')
+    this.secureStorage.setItem(SETUP_FINISHED, 'TRUE')
     this.setUpFinished = true
-    localStorage.setItem(PASSWORD_HASH, passwordHash)
+    this.secureStorage.setItem(PASSWORD_HASH, passwordHash)
     this.passwordHash = passwordHash
   }
 
   factorySet () {
-    this.localStorage.removeItem(ENCRYPTED_PRIVATE_KEY)
+    this.secureStorage.removeItem(ENCRYPTED_PRIVATE_KEY)
     this.encryptedPrivateKey = null
-    this.localStorage.removeItem(END_POINT)
+    this.secureStorage.removeItem(END_POINT)
     this.endPoint = null
 
     this.passwordMemory = null
-    this.localStorage.removeItem(PUBLIC_KEY)
+    this.secureStorage.removeItem(PUBLIC_KEY)
     this.publicKey = null
-    localStorage.removeItem(SETUP_FINISHED)
+    this.secureStorage.removeItem(SETUP_FINISHED)
     this.setUpFinished = false
-    localStorage.removeItem(PASSWORD_HASH)
+    this.secureStorage.removeItem(PASSWORD_HASH)
     this.passwordHash = null
 
     this.generationHashMemory = null
