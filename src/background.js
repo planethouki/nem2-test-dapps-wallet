@@ -34,11 +34,11 @@ const updateNetworkProperties = () => {
   }
   backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.LOADING))
   return nem2.getProperties(store.getEndPoint())
-    .then(({ generationHash, networkType }) => {
+    .then(({ generationHash, networkType, rawData }) => {
       console.log('background: get network properties', generationHash, networkType)
       const hexAddress = hash.publicKeyToHexAddress(store.getPublicKey(), networkType)
       const plainAddress = base32.getBase32EncodeAddress(hexAddress)
-      store.setNetworkProperties(generationHash, networkType, plainAddress)
+      store.setNetworkProperties(generationHash, networkType, plainAddress, rawData)
       if (store.hasPassword()) {
         backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.READY))
       } else {
@@ -101,13 +101,15 @@ function accountInfoRequestHandler (accountInfoRequest) {
         const generationHash = store.getGenerationHash()
         const publicKey = store.getPublicKey()
         const address = store.getAddress()
+        const networkProperties = store.getRawDataOfRestNetworkProperties()
         console.log('background: send ACCOUNT_INFO_FOR_IN_PAGE_RESPONSE')
         resolve(new AccountInfoForInPageResponse(
           accountInfoRequest.id,
           address,
           publicKey,
           networkType,
-          generationHash
+          generationHash,
+          networkProperties
         ))
       },
       error (err) {

@@ -15,6 +15,7 @@ export default class BackgroundStore {
   passwordMemory
   encryptedPrivateKey
   passwordHash
+  rawDataOfRestNetworkPropertiesMemory
 
   constructor (secureStorage) {
     this.secureStorage = secureStorage
@@ -43,11 +44,13 @@ export default class BackgroundStore {
    * @param {string} generationHash
    * @param {int} networkType
    * @param {string} plainAddress
+   * @param {object} rawData REST response /network/properties
    */
-  setNetworkProperties (generationHash, networkType, plainAddress) {
+  setNetworkProperties (generationHash, networkType, plainAddress, rawData) {
     this.generationHashMemory = generationHash
     this.networkTypeMemory = networkType
     this.address = plainAddress
+    this.rawDataOfRestNetworkPropertiesMemory = rawData
   }
 
   getGenerationHash () {
@@ -141,5 +144,9 @@ export default class BackgroundStore {
    */
   equalsPasswordHash (passwordHash) {
     return this.passwordHash === passwordHash
+  }
+
+  getRawDataOfRestNetworkProperties () {
+    return this.rawDataOfRestNetworkPropertiesMemory
   }
 }
