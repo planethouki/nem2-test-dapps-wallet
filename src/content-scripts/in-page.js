@@ -88,7 +88,8 @@ function getAccountInfo () {
               addressPlain: data.addressPlain,
               publicKey: data.publicKey,
               networkType: data.networkType,
-              generationHash: data.generationHash
+              generationHash: data.generationHash,
+              networkProperties: data.networkProperties
             })
           } else {
             const error = new UnknownError()
