@@ -38,5 +38,11 @@ stream.on('data', (data) => {
       console.log('content-script: transfer ACCOUNT_INFO_FOR_IN_PAGE_RESPONSE')
       stream.write(res)
     })
+  } else if (data.type === ModelType.COSIGNATURE_REQUEST) {
+    console.log('content-script: transfer COSIGNATURE_REQUEST')
+    browser.runtime.sendMessage(data).then((res) => {
+      console.log('content-script: transfer COSIGNATURE_(DENIED_)RESPONSE')
+      stream.write(res)
+    })
   }
 })
