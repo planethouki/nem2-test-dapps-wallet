@@ -49,7 +49,7 @@
 import SetUpSaveRequest from '@/assets/models/SetUpSaveRequest'
 import { v4 as uuid } from 'uuid'
 import crypto from '../assets/utils/crypto'
-import nem2 from '../assets/utils/nem2'
+import account from '../assets/utils/account'
 import hash from '../assets/utils/hash'
 
 export default {
@@ -75,7 +75,7 @@ export default {
       if (!isValid) return
       const encrypted = crypto.encrypt(this.inputPrivateKey, this.inputPassword)
       const hashPassword = hash.hashPassword(this.inputPassword)
-      const publicKey = nem2.privateKeyToPublicKey(this.inputPrivateKey)
+      const publicKey = account.privateKeyToPublicKey(this.inputPrivateKey)
       const req = new SetUpSaveRequest(uuid(), encrypted, this.inputNode, this.inputPassword, publicKey, hashPassword)
       this.inputPrivateKey = ''
       this.inputNode = ''
