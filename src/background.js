@@ -15,6 +15,9 @@ import PopUpFacade from './assets/background/PopUpFacade'
 import BackgroundStateInfo from './assets/models/BackgroundStateInfo'
 import BackgroundStateType from './assets/models/BackgroundStateType'
 import AccountInfoForInPageResponse from './assets/models/AccountInfoForInPageResponse'
+import CosignatureResponse from './assets/models/CosignatureResponse'
+import CosignatureDeniedResponse from './assets/models/CosignatureDeniedResponse'
+import {getHash} from "vue-router/src/history/hash";
 
 const popupWindowFeatures = 'location=no, width=400, height=400'
 
@@ -84,6 +87,37 @@ function signatureRequestHandler (signatureRequest) {
   })
 }
 
+function cosignatureRequestHandler (cosignatureRequest) {
+  console.log('background: receive COSIGNATURE_REQUEST')
+  return browser.browserAction.getPopup({}).then((url) => {
+    const popupWindowProxy = window.open(url, '', popupWindowFeatures)
+    return new Promise((resolve, reject) => {
+      confirms.pushSignConfirm(new BackgroundSignConfirm(resolve, reject, popupWindowProxy, cosignatureRequest.message))
+    })
+  }).then((isOk) => {
+    if (!isOk) {
+      console.log('background: send COSIGNATURE_DENIED_RESPONSE')
+      return new CosignatureDeniedResponse(cosignatureRequest.id)
+    }
+    const txHash = hash.getTransactionHash(cosignatureRequest.payload, store.getGenerationHash())
+    const cosignature = account.cosign(
+      crypto.decrypt(store.getEncryptedPrivateKey(),
+      store.getPassword()),
+      txHash
+    )
+    const signerPublicKey = store.getPublicKey()
+    const address = store.getAddress()
+    const networkType = store.getNetworkType()
+    console.log('background: send COSIGNATURE_RESPONSE')
+    return new CosignatureResponse(
+      cosignatureRequest.id,
+      cosignature,
+      signerPublicKey,
+      address,
+      networkType)
+  })
+}
+
 function accountInfoRequestHandler (accountInfoRequest) {
   console.log('background: receive ACCOUNT_INFO_FOR_IN_PAGE_REQUEST')
 
@@ -127,6 +161,8 @@ browser.runtime.onMessage.addListener(function (request, sender) {
     return signatureRequestHandler(request)
   } else if (request.type === ModelType.ACCOUNT_INFO_FOR_IN_PAGE_REQUEST) {
     return accountInfoRequestHandler(request)
+  } else if (request.type === ModelType.COSIGNATURE_REQUEST) {
+    return cosignatureRequestHandler(request)
   }
 })
 
