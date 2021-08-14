@@ -17,7 +17,6 @@ import BackgroundStateType from './assets/models/BackgroundStateType'
 import AccountInfoForInPageResponse from './assets/models/AccountInfoForInPageResponse'
 import CosignatureResponse from './assets/models/CosignatureResponse'
 import CosignatureDeniedResponse from './assets/models/CosignatureDeniedResponse'
-import {getHash} from "vue-router/src/history/hash";
 
 const popupWindowFeatures = 'location=no, width=400, height=400'
 
@@ -102,7 +101,7 @@ function cosignatureRequestHandler (cosignatureRequest) {
     const txHash = hash.getTransactionHash(cosignatureRequest.payload, store.getGenerationHash())
     const cosignature = account.cosign(
       crypto.decrypt(store.getEncryptedPrivateKey(),
-      store.getPassword()),
+        store.getPassword()),
       txHash
     )
     const signerPublicKey = store.getPublicKey()
