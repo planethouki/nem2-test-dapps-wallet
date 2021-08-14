@@ -1,5 +1,6 @@
 import { BehaviorSubject } from 'rxjs'
 import nem2 from './assets/utils/nem2'
+import network from './assets/utils/network'
 import ModelType from './assets/models/ModelType'
 import hash from './assets/utils/hash'
 import base32 from './assets/utils/base32'
@@ -33,7 +34,7 @@ const updateNetworkProperties = () => {
     return Promise.resolve()
   }
   backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.LOADING))
-  return nem2.getProperties(store.getEndPoint())
+  return network.getProperties(store.getEndPoint())
     .then(({ generationHash, networkType, rawData }) => {
       console.log('background: get network properties', generationHash, networkType)
       const hexAddress = hash.publicKeyToHexAddress(store.getPublicKey(), networkType)
