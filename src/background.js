@@ -100,8 +100,7 @@ function cosignatureRequestHandler (cosignatureRequest) {
     }
     const txHash = hash.getTransactionHash(cosignatureRequest.payload, store.getGenerationHash())
     const cosignature = account.cosign(
-      crypto.decrypt(store.getEncryptedPrivateKey(),
-        store.getPassword()),
+      crypto.decrypt(store.getEncryptedPrivateKey(), store.getPassword()),
       txHash
     )
     const signerPublicKey = store.getPublicKey()
