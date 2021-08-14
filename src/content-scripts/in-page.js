@@ -26,6 +26,7 @@ contentScriptStream.on('data', (data) => {
     case ModelType.SIGNATURE_RESPONSE:
     case ModelType.SIGNATURE_DENIED_RESPONSE:
     case ModelType.ACCOUNT_INFO_FOR_IN_PAGE_RESPONSE:
+    case ModelType.COSIGNATURE_RESPONSE:
       modelSubject.next(data)
       break
     default:
