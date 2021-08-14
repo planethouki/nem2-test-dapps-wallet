@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs'
-import nem2 from './assets/utils/nem2'
+import account from './assets/utils/account'
 import network from './assets/utils/network'
 import ModelType from './assets/models/ModelType'
 import hash from './assets/utils/hash'
@@ -66,7 +66,7 @@ function signatureRequestHandler (signatureRequest) {
       return new SignatureDeniedResponse(signatureRequest.id)
     }
     const unsignedPayload = signatureRequest.payload
-    const signature = nem2.sign(crypto.decrypt(store.getEncryptedPrivateKey(),
+    const signature = account.sign(crypto.decrypt(store.getEncryptedPrivateKey(),
       store.getPassword()), unsignedPayload, store.getGenerationHash())
     const signerPublicKey = store.getPublicKey()
     const payload = helper.spliceSignature(unsignedPayload, signature, signerPublicKey)
