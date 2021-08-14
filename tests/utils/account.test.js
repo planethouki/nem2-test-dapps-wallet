@@ -1,10 +1,9 @@
-const axios = require('axios')
-const nem2 = require('../../src/assets/utils/nem2')
+const account = require('../../src/assets/utils/account')
 const helper = require('../../src/assets/utils/helper')
 
 jest.mock('axios')
 
-describe('nem2', () => {
+describe('account', () => {
 
   describe('sign', () => {
     test('transferTransaction', () => {
@@ -26,7 +25,7 @@ describe('nem2', () => {
         "".padStart(64, "0")
       )
 
-      expect(nem2.sign(privateKey, unsignedPayload, generationHash)).toBe(expectSignature)
+      expect(account.sign(privateKey, unsignedPayload, generationHash)).toBe(expectSignature)
     })
 
     test('aggregateBondedTransaction', () => {
@@ -48,7 +47,7 @@ describe('nem2', () => {
         "".padStart(64, "0")
       )
 
-      expect(nem2.sign(privateKey, unsignedPayload, generationHash)).toBe(expectSignature)
+      expect(account.sign(privateKey, unsignedPayload, generationHash)).toBe(expectSignature)
     })
 
     test('aggregateCompleteTransaction', () => {
@@ -70,7 +69,7 @@ describe('nem2', () => {
         "".padStart(64, "0")
       )
 
-      expect(nem2.sign(privateKey, unsignedPayload, generationHash)).toBe(expectSignature)
+      expect(account.sign(privateKey, unsignedPayload, generationHash)).toBe(expectSignature)
     })
   })
 
@@ -95,7 +94,7 @@ describe('nem2', () => {
         networkType: 152
       }
       const expectedCosig = cosignedTransaction.payload.substring((0x01f0 - 64) * 2, 0x01f0 * 2)
-      const cosignature = nem2.cosign(privateKey2, signedTransaction.hash)
+      const cosignature = account.cosign(privateKey2, signedTransaction.hash)
       expect(cosignature).toBe(expectedCosig)
     })
   })
@@ -103,6 +102,6 @@ describe('nem2', () => {
   test('privateKeyToPublicKey', () => {
     const privateKey = '25B3F54217340F7061D02676C4B928ADB4395EB70A2A52D2A11E2F4AE011B03E'
     const publicKey = 'C65B49BA7673BFEC3EFD04DE7EF412A6346F4BA745AAC09649E8CAFE1AC38580'
-    expect(nem2.privateKeyToPublicKey(privateKey)).toBe(publicKey)
+    expect(account.privateKeyToPublicKey(privateKey)).toBe(publicKey)
   })
 })

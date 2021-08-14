@@ -1,6 +1,5 @@
 const { uint8ArrayToHex, hexToUint8Array, getSigningPayload } = require('./helper')
 const tweetnacl = require('tweetnacl')
-const axios = require('axios')
 
 function privateKeyToPublicKey (hexPrivateKey) {
   const privateKey = hexToUint8Array(hexPrivateKey)
