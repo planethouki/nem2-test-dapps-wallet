@@ -7,6 +7,8 @@ import { v4 as uuid } from 'uuid'
 import UserDeniedSignatureError from '../assets/errors/UserDeniedSignatureError'
 import UnknownError from '../assets/errors/UnknownError'
 import AccountInfoForInPageRequest from '../assets/models/AccountInfoForInPageRequest'
+import CosignatureRequest from '../assets/models/CosignatureRequest'
+import UserDeniedCosignatureError from '../assets/errors/UserDeniedCosignatureError'
 
 const modelSubject = new Subject()
 
@@ -72,6 +74,51 @@ function sign (payload, message = '') {
   })
 }
 
+/**
+ *
+ * @param {string} payload
+ * @param {string} message
+ */
+function cosign (payload, message = '') {
+  const id = uuid()
+  return new Promise((resolve, reject) => {
+    const subscription = modelSubject
+      .pipe(
+        filter((data) => !!data.type),
+        filter((data) => data.id === id)
+      )
+      .subscribe({
+        next: (data) => {
+          subscription.unsubscribe()
+          if (data.type === ModelType.COSIGNATURE_RESPONSE) {
+            resolve({
+              signature: data.cosignature,
+              signer: {
+                publicKey: data.signerPublicKey,
+                address: {
+                  address: data.address,
+                  networkType: data.networkType
+                }
+              },
+              version: { lower: 0, higher: 0 }
+            })
+          } else if (data.type === ModelType.COSIGNATURE_DENIED_RESPONSE) {
+            const error = new UserDeniedCosignatureError()
+            reject(error)
+          } else {
+            const error = new UnknownError()
+            reject(error)
+          }
+        },
+        error: (err) => {
+          subscription.unsubscribe()
+          reject(err)
+        }
+      })
+    contentScriptStream.write(new CosignatureRequest(id, payload, message))
+  })
+}
+
 function getAccountInfo () {
   const id = uuid()
   return new Promise((resolve, reject) => {
@@ -107,5 +154,6 @@ function getAccountInfo () {
 
 window.nem2 = {
   sign,
+  cosign,
   getAccountInfo
 }
