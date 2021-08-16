@@ -12,6 +12,29 @@ $ yarn install
 $ yarn build
 ```
 
+You can see the build results in the dist directory.
+You can load this as an extension in each browser to see how it works.
+
+## Getting Started
+
+Building a web application (dApps) using this browser extension.
+
+### Extension Detection
+
+```javascript
+if (typeof window.nem2 !== 'undefined') {
+  console.log('extension is installed!');
+}
+```
+
+### Accessing Accounts
+
+```javascript
+window.nem2.getAccountInfo().then((accountInfo) => {
+    // something
+})
+```
+
 ## API Reference
 
 ### Methods
@@ -44,7 +67,9 @@ nem2.sign (payload, message = '')
 
 ##### Parameters
 
-1. `String` - unsigned transaction payload (Even if it's signed, ignore it, so I expect it to be signed with a one-time account)
+It expects AggregateTransaction(Bonded/Complete), but if you enter anything else, it will return the meaningless result of signing the transaction hash.
+
+1. `String` - transaction payload
 1. `String` - message for signing popup
 
 ##### Returns
