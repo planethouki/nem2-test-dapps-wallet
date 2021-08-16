@@ -79,4 +79,26 @@ describe('helper', () => {
     expect(helper.getNetworkTypeString(168)).toBe('PRIVATE_TEST')
   })
 
+  test('parseNetworkProperties', () => {
+    const raw = {
+      "network": {
+        "identifier": "public-test",
+        "nemesisSignerPublicKey": "2267B24107405779DDF0D8FBEABD8142B97105F356F3737B1FC02220E8F90FF2",
+        "nodeEqualityStrategy": "host",
+        "generationHashSeed": "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155",
+        "epochAdjustment": "1616694977s"
+      },
+      "chain": {
+        "enableVerifiableState": true,
+        "enableVerifiableReceipts": true,
+        "currencyMosaicId": "0x091F'837E'059A'E13C",
+        "harvestingMosaicId": "0x191F'837E'059A'E13C"
+      },
+      "plugins": {}
+    }
+    const result = helper.parseRestNetworkProperties(raw)
+    expect(result.epochAdjustment).toBe(1616694977)
+    expect(result.currencyMosaicId).toBe("091F837E059AE13C")
+    expect(result.harvestingMosaicId).toBe("191F837E059AE13C")
+  })
 })

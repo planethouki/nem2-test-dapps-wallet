@@ -65,6 +65,25 @@ function getNetworkTypeString (networkType) {
   }
 }
 
+function parseRestNetworkProperties (networkProperties) {
+  const epochAdjustment = Number(networkProperties.network.epochAdjustment.replace('s', ''))
+  const currencyMosaicId = networkProperties
+    .chain
+    .currencyMosaicId
+    .replace(/'/gm, '')
+    .replace('0x', '')
+  const harvestingMosaicId = networkProperties
+    .chain
+    .harvestingMosaicId
+    .replace(/'/gm, '')
+    .replace('0x', '')
+  return {
+    epochAdjustment,
+    currencyMosaicId,
+    harvestingMosaicId
+  }
+}
+
 module.exports = {
   endian,
   uint8ArrayToHex,
@@ -73,5 +92,6 @@ module.exports = {
   spliceSignature,
   getSizePayload,
   getTransactionType,
-  getNetworkTypeString
+  getNetworkTypeString,
+  parseRestNetworkProperties
 }
