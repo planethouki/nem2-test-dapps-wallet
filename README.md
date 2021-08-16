@@ -59,6 +59,63 @@ none
 - `addressPlain`: `String`
 - `networkProperties`: `Object` - REST API Response of `/network/properties`
 
+##### Example
+
+```js
+nem2.getAccountInfo().then((accountInfo) => {
+    console.log(accountInfo)
+})
+/*
+{
+    "networkType": 152,
+    "generationHash": "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155",
+    "publicKey": "DFF2D798CF331CDDEC64FD9F8F565B3A78D3423700955B2EE03BDBD09F01E171",
+    "addressPlain": "TAANPEY74KKND4QHPG5DZDPUY24NLPVLS6WIWWI",
+    "networkProperties": {
+        "network": {
+            "identifier": "public-test",
+            "nemesisSignerPublicKey": "2267B24107405779DDF0D8FBEABD8142B97105F356F3737B1FC02220E8F90FF2",
+            "nodeEqualityStrategy": "host",
+            "generationHashSeed": "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155",
+            "epochAdjustment": "1616694977s"
+        },
+        "chain": {
+            "enableVerifiableState": true,
+            "enableVerifiableReceipts": true,
+            "currencyMosaicId": "0x091F'837E'059A'E13C",
+            "harvestingMosaicId": "0x091F'837E'059A'E13C",
+            "blockGenerationTargetTime": "30s",
+            "blockTimeSmoothingFactor": "3000",
+            "importanceGrouping": "180",
+            "importanceActivityPercentage": "5",
+            "maxRollbackBlocks": "0",
+            "maxDifficultyBlocks": "60",
+            "defaultDynamicFeeMultiplier": "100",
+            "maxTransactionLifetime": "6h",
+            "maxBlockFutureTime": "300ms",
+            "initialCurrencyAtomicUnits": "7'842'928'625'000'000",
+            "maxMosaicAtomicUnits": "8'999'999'999'000'000",
+            "totalChainImportance": "7'842'928'625'000'000",
+            "minHarvesterBalance": "10'000'000'000",
+            "maxHarvesterBalance": "50'000'000'000'000",
+            "minVoterBalance": "3'000'000'000'000",
+            "votingSetGrouping": "720",
+            "maxVotingKeysPerAccount": "3",
+            "minVotingKeyLifetime": "28",
+            "maxVotingKeyLifetime": "720",
+            "harvestBeneficiaryPercentage": "25",
+            "harvestNetworkPercentage": "5",
+            "harvestNetworkFeeSinkAddress": "TCZ3UZPWWC5NR6TGGYEJ2MT4Z5ZLR3XTIVI4RHA",
+            "maxTransactionsPerBlock": "6'000"
+        },
+        "plugins": {
+          ...
+        }
+    }
+}
+ */
+```
+
 #### nem2.sign
 
 ```javascript
