@@ -61,7 +61,7 @@ none
 - `generationHash`: `String`
 - `publicKey`: `String`
 - `addressPlain`: `String`
-- `epochAdjustment`: `Numbe`
+- `epochAdjustment`: `Number`
 - `currencyMosaicId`: `String`
 - `harvestingMosaicId`: `String`
 - `networkProperties`: `Object` - REST API Response of `/network/properties`
