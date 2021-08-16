@@ -65,7 +65,6 @@ none
 nem2.getAccountInfo().then((accountInfo) => {
     console.log(accountInfo)
 })
-/*
 {
     "networkType": 152,
     "generationHash": "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155",
@@ -113,7 +112,6 @@ nem2.getAccountInfo().then((accountInfo) => {
         }
     }
 }
- */
 ```
 
 #### nem2.sign
