@@ -144,6 +144,11 @@ function accountInfoRequestHandler (accountInfoRequest) {
         const publicKey = store.getPublicKey()
         const address = store.getAddress()
         const networkProperties = store.getRawDataOfRestNetworkProperties()
+        const {
+          epochAdjustment,
+          currencyMosaicId,
+          harvestingMosaicId
+        } = helper.parseRestNetworkProperties(networkProperties)
         console.log('background: send ACCOUNT_INFO_FOR_IN_PAGE_RESPONSE')
         resolve(new AccountInfoForInPageResponse(
           accountInfoRequest.id,
@@ -151,6 +156,9 @@ function accountInfoRequestHandler (accountInfoRequest) {
           publicKey,
           networkType,
           generationHash,
+          epochAdjustment,
+          currencyMosaicId,
+          harvestingMosaicId,
           networkProperties
         ))
       },

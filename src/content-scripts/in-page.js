@@ -138,6 +138,9 @@ function getAccountInfo () {
               publicKey: data.publicKey,
               networkType: data.networkType,
               generationHash: data.generationHash,
+              epochAdjustment: data.epochAdjustment,
+              currencyMosaicId: data.currencyMosaicId,
+              harvestingMosaicId: data.harvestingMosaicId,
               networkProperties: data.networkProperties
             })
           } else {
