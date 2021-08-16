@@ -56,9 +56,10 @@ export default {
   name: 'SetUp',
   data () {
     return {
-      inputPrivateKey: '25B3F54217340F7061D02676C4B928ADB4395EB70A2A52D2A11E2F4AE011B03E',
-      inputNode: 'https://dg0nbr5d1ohfy.cloudfront.net:443',
-      inputPassword: 'password'
+      inputPrivateKey: '',
+      inputNode: 'http://ngl-dual-001.testnet.symboldev.network:3000',
+      inputPassword: '',
+      message: ''
     }
   },
   computed: {
