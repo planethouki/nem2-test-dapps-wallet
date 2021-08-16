@@ -78,9 +78,11 @@ export default {
       const isValid = this.$refs.form.checkValidity()
       console.log(`SetUp.vue checkValidity ${isValid}`)
       if (!isValid) return
+      const url = new URL('/node/info', this.inputNode)
       const request = new Request(
-        `${this.inputNode}/node/info`,
+        url.toString(),
         {
+          baseURL: this.inputNode,
           method: 'GET',
           mode: 'cors'
         }
