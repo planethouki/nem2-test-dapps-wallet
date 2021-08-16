@@ -61,6 +61,9 @@ none
 - `generationHash`: `String`
 - `publicKey`: `String`
 - `addressPlain`: `String`
+- `epochAdjustment`: `Numbe`
+- `currencyMosaicId`: `String`
+- `harvestingMosaicId`: `String`
 - `networkProperties`: `Object` - REST API Response of `/network/properties`
 
 ##### Example
@@ -75,6 +78,9 @@ nem2.getAccountInfo().then((accountInfo) => {
     "generationHash": "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155",
     "publicKey": "DFF2D798CF331CDDEC64FD9F8F565B3A78D3423700955B2EE03BDBD09F01E171",
     "addressPlain": "TAANPEY74KKND4QHPG5DZDPUY24NLPVLS6WIWWI",
+    "epochAdjustment": 1616694977,
+    "currencyMosaicId": "091F837E059AE13C",
+    "harvestingMosaicId": "091F837E059AE13C",
     "networkProperties": {
         "network": {
             "identifier": "public-test",
