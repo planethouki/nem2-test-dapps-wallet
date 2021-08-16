@@ -23,7 +23,7 @@ Building a web application (dApps) using this browser extension.
 
 ```javascript
 if (typeof window.nem2 !== 'undefined') {
-  console.log('extension is installed!');
+  console.log('extension is installed!')
 }
 ```
 
