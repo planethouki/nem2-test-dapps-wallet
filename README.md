@@ -2,6 +2,10 @@
 
 Browser Extension Wallet (Alpha version)
 
+symbol TEST_NET Only.
+
+Credentials (private key) is stored in local storage and should not be used in a production environment (MAIN_NET)
+
 ## Build Setup
 
 ``` bash
