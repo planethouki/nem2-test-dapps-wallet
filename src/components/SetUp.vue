@@ -39,6 +39,9 @@
         v-model="inputPassword" />
       <div id="passwordHelp" class="form-text">min 8 characters</div>
     </div>
+    <div>
+      {{ message }}
+    </div>
     <div class="mb-3">
       <button type="submit" class="btn btn-primary">Save</button>
     </div>
@@ -68,12 +71,50 @@ export default {
     }
   },
   methods: {
-    save (e) {
+    async save (e) {
       e.preventDefault()
       console.log('SetUp.vue submit')
+      this.message = ''
       const isValid = this.$refs.form.checkValidity()
       console.log(`SetUp.vue checkValidity ${isValid}`)
       if (!isValid) return
+      const request = new Request(
+        `${this.inputNode}/node/info`,
+        {
+          method: 'GET',
+          mode: 'cors'
+        }
+      )
+      const checkNode = await fetch(request)
+        .then(res => res.json())
+        .then((data) => {
+          console.log(data)
+          return {
+            success: true,
+            data: {
+              isTestNet: data.networkIdentifier === 152
+            }
+          }
+        })
+        .catch((e) => {
+          return {
+            success: false,
+            data: {
+              error: e
+            }
+          }
+        })
+
+      if (checkNode.success === false) {
+        this.message = 'cannot access node'
+        return
+      }
+
+      if (checkNode.data.isTestNet === false) {
+        this.message = 'Only Testnet is supported.'
+        return
+      }
+
       const encrypted = crypto.encrypt(this.inputPrivateKey, this.inputPassword)
       const hashPassword = hash.hashPassword(this.inputPassword)
       const publicKey = account.privateKeyToPublicKey(this.inputPrivateKey)
