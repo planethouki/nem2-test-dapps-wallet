@@ -1,5 +1,7 @@
 # nem2-test-dapps-wallet
 
+Browser Extension Wallet (Alpha version)
+
 ## Build Setup
 
 ``` bash
