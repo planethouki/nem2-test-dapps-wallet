@@ -139,6 +139,41 @@ It expects AggregateTransaction(Bonded/Complete), but if you enter anything else
 - `transactionType`: `Number`
 - `networkType`: `Number`
 
+##### Example
+
+In your web application, you may have imported the symbol-sdk
+
+```javascript
+const networkType = 152
+const generationHash = "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155"
+const epochAdjustment = 1616694977
+const mosaicId = "091F837E059AE13C"
+const recipientAddress = "TCZ5KXKSAJA74A5ECZCXMHOHKFVQ36YSONW4RSA"
+const endPoint = "http://ngl-dual-001.testnet.symboldev.network:3000"
+const amount = 1000000
+const tx = TransferTransaction.create(
+    Deadline.create(epochAdjustment),
+    Address.createFromRawAddress(recipientAddress),
+    [new Mosaic(new MosaicId(mosaicId), UInt64.fromUint(amount))],
+    PlainMessage.create(''),
+    networkType,
+    UInt64.fromUint(20000)
+)
+const account = Account.generateNewAccount(networkType)
+const tempSignedTx = account.sign(tx, generationHash)
+const signResult = await window.nem2.sign(tempSignedTx.payload, `${amount} ${mosaicId} to ${recipientAddress}`)
+const signedTx = new SignedTransaction(
+    signResult.payload,
+    signResult.hash,
+    signResult.signerPublicKey,
+    signResult.transactionType,
+    signResult.networkType
+)
+const repo = new RepositoryFactoryHttp(endPoint)
+const txHttp = repo.createTransactionRepository()
+txHttp.announce(signedTx)
+```
+
 #### nem2.cosign
 
 ```javascript
@@ -163,3 +198,37 @@ nem2.cosign (payload, message = '')
 1. `version`: `Object`
     1. `lower`: `Number` - always 0
     1. `higher`: `Number` - always 0
+
+##### Example
+
+Aggregate Complete Example
+
+```javascript
+const endPoint = "http://ngl-dual-001.testnet.symboldev.network:3000"
+
+// something signed transaction
+const signedTransaction = new SignedTransaction()
+
+const cosignResult = await window.nem2.cosign(signedTransaction.payload, "cosign request")
+const aggregateCosignature = new AggregateTransactionCosignature(
+    cosignResult.signature,
+    PublicAccount.createFromPublicKey(cosignResult.signer.publicKey, cosignResult.signer.address.networkType)
+)
+const cosignedWithoutSize = signedTransaction.payload
+    + aggregateCosignature.version.toHex()
+    + aggregateCosignature.signer.publicKey
+    + aggregateCosignature.signature
+const size = (cosignedWithoutSize.length / 2).toString(16).padStart(8, '0').toUpperCase()
+const leSize = size.substr(-2, 2) + size.substr(-4, 2) + size.substr(-6, 2) + size.substr(-8, 2)
+const cosignedPayload = leSize + cosignedWithoutSize.substr(8)
+const cosignedTx = new SignedTransaction(
+    cosignedPayload,
+    signedTransaction.hash,
+    signedTransaction.signerPublicKey,
+    signedTransaction.type,
+    signedTransaction.networkType
+)
+const repo = new RepositoryFactoryHttp(endPoint)
+const txHttp = repo.createTransactionRepository()
+txHttp.announce(cosignedTx)
+```
