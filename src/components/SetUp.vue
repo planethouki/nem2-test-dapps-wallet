@@ -90,7 +90,6 @@ export default {
       const checkNode = await fetch(request)
         .then(res => res.json())
         .then((data) => {
-          console.log(data)
           return {
             success: true,
             data: {

@@ -1,4 +1,5 @@
 import { BehaviorSubject } from 'rxjs'
+import { filter, tap } from 'rxjs/operators'
 import account from './assets/utils/account'
 import network from './assets/utils/network'
 import ModelType from './assets/models/ModelType'
@@ -24,36 +25,44 @@ const setBadgeText = (text) => {
   browser.browserAction.setBadgeText({ text })
 }
 
-const backgroundStateSubject = new BehaviorSubject(new BackgroundStateInfo(BackgroundStateType.LOADING))
+const backgroundStateSubject = new BehaviorSubject(new BackgroundStateInfo(BackgroundStateType.STARTUP))
 const store = new BackgroundStore(window.localStorage)
 const confirms = new BackgroundSignConfirms(setBadgeText)
 
-const updateNetworkProperties = () => {
-  console.log('background: update network properties')
-  confirms.clear()
-  if (!store.isSetUpFinished()) {
-    backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BEFORE_SETUP))
-    return Promise.resolve()
-  }
+const invokeLoading = () => {
   backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.LOADING))
-  return network.getProperties(store.getEndPoint())
-    .then(({ generationHash, networkType, rawData }) => {
-      console.log('background: get network properties', generationHash, networkType)
-      const hexAddress = hash.publicKeyToHexAddress(store.getPublicKey(), networkType)
-      const plainAddress = base32.getBase32EncodeAddress(hexAddress)
-      store.setNetworkProperties(generationHash, networkType, plainAddress, rawData)
-      if (store.hasPassword()) {
-        backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.READY))
-      } else {
-        backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.WAIT_PASSWORD))
-      }
-    })
-    .catch((e) => {
-      backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.LOAD_ERROR))
-    })
 }
 
-updateNetworkProperties()
+backgroundStateSubject
+  .pipe(
+    tap(info => console.log('background: state change', info.type, Date.now())),
+    filter(stateInfo => stateInfo.type === BackgroundStateType.LOADING)
+  )
+  .subscribe(_ => {
+    console.log('background: loading state trigger function')
+    confirms.clear()
+    if (!store.isSetUpFinished()) {
+      setTimeout(() => {
+        backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.BEFORE_SETUP))
+      }, 0)
+      return
+    }
+    network.getProperties(store.getEndPoint())
+      .then(({ generationHash, networkType, rawData }) => {
+        console.log('background: get network properties', generationHash, networkType)
+        const hexAddress = hash.publicKeyToHexAddress(store.getPublicKey(), networkType)
+        const plainAddress = base32.getBase32EncodeAddress(hexAddress)
+        store.setNetworkProperties(generationHash, networkType, plainAddress, rawData)
+        if (store.hasPassword()) {
+          backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.READY))
+        } else {
+          backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.WAIT_PASSWORD))
+        }
+      })
+      .catch((e) => {
+        backgroundStateSubject.next(new BackgroundStateInfo(BackgroundStateType.LOAD_ERROR))
+      })
+  })
 
 function signatureRequestHandler (signatureRequest) {
   console.log('background: receive SIGNATURE_REQUEST')
@@ -167,5 +176,7 @@ browser.runtime.onMessage.addListener(function (request, sender) {
 window.nem2 = new PopUpFacade(
   store,
   confirms,
-  updateNetworkProperties,
+  invokeLoading,
   backgroundStateSubject)
+
+invokeLoading()

@@ -45,7 +45,7 @@ export default {
     browser.runtime.getBackgroundPage().then(({ nem2 }) => {
       this.nem2 = nem2
       nem2.listenBackgroundState((stateInfo) => {
-        console.log('App.vue', stateInfo.type)
+        console.log('App.vue', stateInfo.type, Date.now())
         this.isLoading = stateInfo.type === BackgroundStateType.LOADING
         this.isBeforeSetUp = stateInfo.type === BackgroundStateType.BEFORE_SETUP
         this.isLoadError = stateInfo.type === BackgroundStateType.LOAD_ERROR

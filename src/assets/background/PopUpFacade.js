@@ -7,12 +7,12 @@ import BackgroundStateInfo from '../models/BackgroundStateInfo'
 export default class PopUpFacade {
   store
   signConfirmManager
-  updateNetworkProperties
+  invokeLoading
 
-  constructor (store, confirms, updateNetworkProperties, backgroundStateSubject) {
+  constructor (store, confirms, invokeLoading, backgroundStateSubject) {
     this.store = store
     this.backgroundStateSubject = backgroundStateSubject
-    this.updateNetworkProperties = updateNetworkProperties
+    this.invokeLoading = invokeLoading
     this.signConfirmManager = {
       firstMessage () {
         return confirms.getFirstMessage()
@@ -45,12 +45,12 @@ export default class PopUpFacade {
 
   setEndPoint (endPoint) {
     this.store.setEndPoint(endPoint)
-    this.updateNetworkProperties()
+    this.invokeLoading()
   }
 
   setSettings (settingsSaveRequest) {
     this.store.setEndPoint(settingsSaveRequest.inputEndPoint)
-    this.updateNetworkProperties()
+    this.invokeLoading()
   }
 
   setUp (setUpSaveRequest) {
@@ -61,7 +61,7 @@ export default class PopUpFacade {
       setUpSaveRequest.publicKey,
       setUpSaveRequest.passwordHash
     )
-    this.updateNetworkProperties()
+    this.invokeLoading()
   }
 
   setPassword (password) {
@@ -79,6 +79,6 @@ export default class PopUpFacade {
 
   factorySet () {
     this.store.factorySet()
-    this.updateNetworkProperties()
+    this.invokeLoading()
   }
 }
