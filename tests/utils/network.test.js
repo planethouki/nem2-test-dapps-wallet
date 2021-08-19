@@ -30,4 +30,60 @@ describe('network', () => {
     expect(rawData).toHaveProperty('network')
     expect(rawData).toHaveProperty('plugins')
   })
+
+  describe('checkNode', () => {
+    test('successTestNet', async () => {
+      axios.request.mockImplementation((config) => {
+        return Promise.resolve({
+          data: {
+            "version": 16777472,
+            "publicKey": "3BD4CECB2C82DE809CE6AD285ECF8687B4594EAE7D9220C2064E56812977EAE6",
+            "networkGenerationHashSeed": "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155",
+            "roles": 2,
+            "port": 7900,
+            "networkIdentifier": 152,
+            "host": "ngl-api-001.testnet.symboldev.network",
+            "friendlyName": "ngl-api-001",
+            "nodePublicKey": "9B881DB30E7FDF0C21F0487EC24F5F6323B0C15001E1918D30BCCC6BA35701E7"
+          }
+        })
+      })
+      const endPoint = 'http://localhost:3000'
+      const { success, data } = await network.checkNode(endPoint)
+      expect(success).toBe(true)
+      expect(data).toHaveProperty('isTestNet', true)
+    })
+
+    test('successMainNet', async () => {
+      axios.request.mockImplementation((config) => {
+        return Promise.resolve({
+          data: {
+            "version": 16777472,
+            "publicKey": "",
+            "networkGenerationHashSeed": "57F7DA205008026C776CB6AED843393F04CD458E0AA2D9F1D5F31A402072B2D6",
+            "roles": 3,
+            "port": 7900,
+            "networkIdentifier": 104,
+            "host": "",
+            "friendlyName": "",
+            "nodePublicKey": ""
+          }
+        })
+      })
+      const endPoint = 'http://localhost:3000'
+      const { success, data } = await network.checkNode(endPoint)
+      expect(success).toBe(true)
+      expect(data).toHaveProperty('isTestNet', false)
+    })
+
+    test('fail', async () => {
+      axios.request.mockImplementation((config) => {
+        return Promise.reject(new Error('test'))
+      })
+      const endPoint = 'http://localhost:3000'
+      const { success, data } = await network.checkNode(endPoint)
+      expect(success).toBe(false)
+      expect(data).toHaveProperty('error')
+    })
+  })
 })

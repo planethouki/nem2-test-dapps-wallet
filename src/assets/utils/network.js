@@ -27,6 +27,33 @@ async function getProperties (endPoint) {
   })
 }
 
+async function checkNode (baseUrl) {
+  return axios
+    .request({
+      method: 'GET',
+      baseURL: baseUrl,
+      url: '/node/info',
+      timeout: 5000
+    })
+    .then((res) => {
+      return {
+        success: true,
+        data: {
+          isTestNet: res.data.networkIdentifier === 152
+        }
+      }
+    })
+    .catch((e) => {
+      return {
+        success: false,
+        data: {
+          error: e
+        }
+      }
+    })
+}
+
 module.exports = {
-  getProperties
+  getProperties,
+  checkNode
 }
