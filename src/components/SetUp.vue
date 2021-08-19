@@ -16,7 +16,7 @@
       <div id="privateKeyHelp" class="form-text">hexadecimal 64 characters</div>
     </div>
     <div class="mb-3">
-      <label for="inputNode" class="form-label">Node</label>
+      <label for="inputNode" class="form-label">Node (TestNet Only)</label>
       <input
         type="text"
         class="form-control"
@@ -39,11 +39,11 @@
         v-model="inputPassword" />
       <div id="passwordHelp" class="form-text">min 8 characters</div>
     </div>
-    <div>
-      {{ message }}
-    </div>
     <div class="mb-3">
       <button type="submit" class="btn btn-primary">Save</button>
+      <span>
+        {{ message }}
+      </span>
     </div>
   </form>
 </template>
@@ -54,6 +54,7 @@ import { v4 as uuid } from 'uuid'
 import crypto from '../assets/utils/crypto'
 import account from '../assets/utils/account'
 import hash from '../assets/utils/hash'
+import network from '../assets/utils/network'
 
 export default {
   name: 'SetUp',
@@ -73,38 +74,14 @@ export default {
   methods: {
     async save (e) {
       e.preventDefault()
-      console.log('SetUp.vue submit')
       this.message = ''
+      console.log('SetUp.vue submit')
+
       const isValid = this.$refs.form.checkValidity()
       console.log(`SetUp.vue checkValidity ${isValid}`)
       if (!isValid) return
-      const url = new URL('/node/info', this.inputNode)
-      const request = new Request(
-        url.toString(),
-        {
-          baseURL: this.inputNode,
-          method: 'GET',
-          mode: 'cors'
-        }
-      )
-      const checkNode = await fetch(request)
-        .then(res => res.json())
-        .then((data) => {
-          return {
-            success: true,
-            data: {
-              isTestNet: data.networkIdentifier === 152
-            }
-          }
-        })
-        .catch((e) => {
-          return {
-            success: false,
-            data: {
-              error: e
-            }
-          }
-        })
+
+      const checkNode = await network.checkNode(this.inputNode)
 
       if (checkNode.success === false) {
         this.message = 'cannot access node'
