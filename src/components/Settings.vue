@@ -5,7 +5,7 @@
     </template>
     <template v-else>
       <div class="mb-3">
-        <label for="inputNode" class="form-label">Node</label>
+        <label for="inputNode" class="form-label">Node (TestNet Only)</label>
         <input
           type="text"
           class="form-control"
@@ -15,6 +15,7 @@
         <button type="button" class="btn btn-primary" @click="save">Save</button>
         <span class="px-1"></span>
         <button type="button" class="btn btn-secondary" @click="back">Back</button>
+        <span>{{ settingMessage }}</span>
       </div>
       <hr />
       <div class="mb-3">
@@ -31,6 +32,7 @@
 import FactorySet from '@/components/FactorySet.vue'
 import SettingsSaveRequest from '@/assets/models/SettingsSaveRequest'
 import { v4 as uuid } from 'uuid'
+import network from '../assets/utils/network'
 
 export default {
   name: 'Settings',
@@ -44,14 +46,28 @@ export default {
   data () {
     return {
       inputNode: '',
-      isShowResetConfirm: false
+      isShowResetConfirm: false,
+      settingMessage: '',
+      resetMessage: ''
     }
   },
   created () {
     this.inputNode = this.nem2.getEndPoint()
   },
   methods: {
-    save () {
+    async save () {
+      const checkNode = await network.checkNode(this.inputNode)
+
+      if (checkNode.success === false) {
+        this.settingMessage = 'cannot access node'
+        return
+      }
+
+      if (checkNode.data.isTestNet === false) {
+        this.settingMessage = 'Only Testnet is supported.'
+        return
+      }
+
       const request = new SettingsSaveRequest(uuid(), this.inputNode)
       this.$emit('save', request)
     },
